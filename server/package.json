@@ -1,25 +1,30 @@
 {
-  "name": "gardenexpress",
+  "name": "mongoserver",
   "version": "1.0.0",
-  "description": "Garden js express app",
+  "description": "mongoose crud restful garden",
   "main": "server.js",
-  "dependencies": {
-    "axios": "^0.19.2",
-    "cookie-parser": "^1.4.5",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "mariadb": "^2.4.0",
-    "package-json": "^6.5.0"
-  },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon app.js"
+    "start": "npx nodemon server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git"
+  "keywords": [
+    "Express",
+    "RestApi",
+    "MongoDB",
+    "Mongoose",
+    "Garden"
+  ],
+  "author": "Gracia&Patrick",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   },
-  "author": "Gracia / Patrick",
-  "license": "ISC"
+  "dependencies": {
+    "-": "0.0.1",
+    "D": "^1.0.0",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.16"
+  }
 }
