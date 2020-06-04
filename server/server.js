@@ -18,7 +18,7 @@ app.use(
 app.use(bodyParser.json());
 
 // Configuring the database
-const dbConfig = require("./config/database.config.js");
+const dbConfig = require("./config/secret.db.config");
 const mongoose = require("mongoose");
 
 mongoose.Promise = global.Promise;
@@ -47,6 +47,7 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/plant.routes.js")(app);
+//require("./JSONs/reader")();
 // listen for requests
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
