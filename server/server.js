@@ -47,7 +47,7 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/plant.routes.js")(app);
-//require("./JSONs/reader")();
+require("./JSONs/reader")();
 // listen for requests
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
