@@ -1,42 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const port = 5000;
+const jwt = require("./_helpers/jwt");
+const errorHandler = require("./_helpers/error-handler");
+//const port = 5000;
 
 // create express app
 const app = express();
 
-app.use(cors());
-
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(
   bodyParser.urlencoded({
-    extended: true,
+    extended: false,
   })
 );
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
+app.use(cors());
 
-// Configuring the database
-const dbConfig = require("./config/database.config.js");
-const mongoose = require("mongoose");
+// use JWT auth to secure the api
+app.use(jwt());
 
-mongoose.Promise = global.Promise;
-mongoose.set("useFindAndModify", false);
+// api routes
+app.use("/users", require("./controllers/user.controller"));
 
-// Connecting to the database
-mongoose
-  .connect(dbConfig.url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    console.log("Successfully connected to the database");
-  })
-  .catch((err) => {
-    console.log("Could not connect to the database. Exiting now...", err);
-    process.exit();
-  });
+// global error handler
+app.use(errorHandler);
 
 // define a simple route
 app.get("/", (req, res) => {
@@ -48,6 +37,14 @@ app.get("/", (req, res) => {
 
 require("./routes/plant.routes.js")(app);
 // listen for requests
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}`);
+
+// app.listen(port, () => {
+//   console.log(`Server is listening on port ${port}`);
+// });
+
+// start server
+const port =
+  process.env.NODE_ENV === "production" ? process.env.PORT || 80 : 5000;
+app.listen(port, function () {
+  console.log("Server listening on port " + port);
 });
