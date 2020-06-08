@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/plant.routes.js")(app);
-require("./JSONs/reader")();
+
 // listen for requests
 
 // app.listen(port, () => {
@@ -48,4 +48,5 @@ const port =
   process.env.NODE_ENV === "production" ? process.env.PORT || 80 : 5000;
 app.listen(port, function () {
   console.log("Server listening on port " + port);
+  const reader = require("./JSONs/reader")();
 });
