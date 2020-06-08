@@ -1,3 +1,4 @@
 module.exports = {
-  url: "mongodb://localhost:27017/garden",
+  connectionString: "mongodb://localhost:27017/garden",
+  secret: "Gracia",
 };
