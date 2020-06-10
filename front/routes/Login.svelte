@@ -16,15 +16,15 @@
   }
 
   // Call an authenication microservice to handle the authentication.
-  // const response = await fetch("http://localhost:5000/users/authenticate", {
-  //   method: "POST",
-  //   headers: {
-  //     Accept: "application/json",
-  //     "Content-Type": "application/json"
-  //   },
-  //   body: JSON.stringify({ username: username, password: password })
-  // });
-  // const data = await response.json();
+  const response = await fetch("http://localhost:5000/users/authenticate", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ username: username, password: password })
+  });
+  const data = await response.json();
 </script>
 
 <form>
