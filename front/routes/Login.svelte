@@ -3,45 +3,75 @@
   import Tab, { Icon, Label } from "@smui/tab";
   import Textfield from "@smui/textfield";
 
-  export let username = "";
-  //   export let email = "";
-  export let password = "";
+ let error_boolean = false;
+   let username = "";
+  //   export let Username = "";
+   let password = "";
   //   export let comment = "";
 
-  async function handleSubmit(event) {
-    console.log(event);
-    console.log(event.target);
-    console.log(event.target.username.value);
-    console.log(event.target.password.value);
-  }
-
-  // Call an authenication microservice to handle the authentication.
-  const response = await fetch("http://localhost:5000/users/authenticate", {
-    method: "POST",
+    const apiUrl = "http://localhost:5000/users/authenticate";
+//
+async function postData(url = '', data = {}) {
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    mode: 'cors', // no-cors, *cors, same-origin
+    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+    credentials: 'same-origin', // include, *same-origin, omit
     headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
+      // 'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: JSON.stringify({ username: username, password: password })
+    redirect: 'follow', // manual, *follow, error
+    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+    body: JSON.stringify(data) // body data type must match "Content-Type" header
   });
-  const data = await response.json();
+  return response.json(); // parses JSON response into native JavaScript objects
+}
+
+
+//
+   async function handleSubmit(event) {
+        console.log(event);
+        console.log(event.target);
+        console.log(event.target.username.value);
+        console.log(event.target.password.value);
+
+        postData(apiUrl, { username: event.target.username.value, password: event.target.password.value })
+  .then(data => {
+    console.log(data); // JSON data parsed by `response.json()` call
+  });
+    }
+   function validateMessageUsername(event) {
+       let textbox = event.target;
+       error_boolean = false;
+       if (textbox.value === '') {
+            textbox.setCustomValidity('Required username');
+        } else if (textbox.validity.typeMismatch){
+            error_boolean = true;
+            textbox.setCustomValidity('please enter a valid username');
+        } else {
+           textbox.setCustomValidity('');
+        }
+        return true;
+    }
+
 </script>
 
-<form>
+<form
+    on:submit|preventDefault="{handleSubmit}"
+    on:invalid={validateMessageUsername}
+    on:changed={validateMessageUsername}
+    on:input={validateMessageUsername}
+>
+  <label for="username">Username</label>
+  <input required type="username" id="username" />
+  {#if error_boolean}
+    <h1> OH NO! AN ERRROR!</h1>
+  {/if}
 
-  <Textfield bind:value={username} label="Username" />
-  <br />
-  <Textfield bind:value={password} label="Password" />
-  <!-- <Textfield
-    type="email"
-    bind:value={email}
-    label="Email"
-    input$autocomplete="email" />-->
-  <br />
-  <button type="submit">Login</button>
+  <label for="password">Password</label>
+  <input required type="password" id="password" />
 
-  <br />
-  <!-- <Textfield textarea bind:value={comment} label="Comment" /> -->
-
+  <button type="submit">Login to account</button>
 </form>
-<form on:submit|preventDefault={handleSubmit} />

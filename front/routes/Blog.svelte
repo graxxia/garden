@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
 
-  const apiUrl = "https://jsonplaceholder.typicode.com/posts/";
+  const apiUrl = "http://localhost:5000/plants";
 
   let data = [];
 
@@ -11,12 +11,12 @@
   });
 </script>
 
-<h1>Blog</h1>
+<h1>Plants</h1>
 
 {#each data as item}
   <div>
     <h5>
-      <a href="/blog/{item.id}">{item.title}</a>
+      <a href="/plant/{item.name}">{item.name}</a>
     </h5>
   </div>
 {/each}
