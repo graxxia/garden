@@ -27,6 +27,9 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --content-base public"
+    "dev": "webpack-dev-server --content-base public --single"
+  },
+  "dependencies": {
+    "page": "^1.11.6"
   }
 }

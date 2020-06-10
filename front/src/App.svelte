@@ -1,13 +1,33 @@
 <script>
+  import router from "page";
+  import Home from "../routes/Home.svelte";
+  import Blog from "../routes/Blog.svelte";
+  import Login from "../routes/Login.svelte";
+  import TabBar from "@smui/tab-bar";
   import Button from "@smui/button";
   import Tab, { Icon, Label } from "@smui/tab";
-  import TabBar from "@smui/tab-bar";
-  import Textfield from "@smui/textfield";
+  import SingleBlog from "../routes/SingleBlog.svelte";
 
-  export let name = "";
-  export let email = "";
-  export let comment = "";
   let active = "Home";
+  let page;
+  let params;
+
+  router("/", () => (page = Home));
+  router("/blog", () => (page = Blog));
+  router(
+    "/blog/:id",
+
+    // Before we set the component
+    (ctx, next) => {
+      params = ctx.params;
+      next();
+    },
+
+    // Finally set the component
+    () => (page = SingleBlog)
+  );
+  router("/login", () => (page = Login));
+  router.start();
 </script>
 
 <style>
@@ -21,8 +41,18 @@
 
 <h1>my Garden</h1>
 
+<nav>
+  <a href="/">Home</a>
+  <a href="/blog">Blog</a>
+  <a href="/login">Login</a>
+</nav>
+
+<main>
+  <svelte:component this={page} {params} />
+</main>
+
 <div>
-  <TabBar tabs={['Home', 'Merchandise', 'About Us']} let:tab bind:active>
+  <TabBar tabs={['Home', 'Blog', 'About Us']} let:tab bind:active>
     <!-- Notice that the `tab` property is required! -->
     <Tab {tab}>
       <Label>{tab}</Label>
@@ -31,7 +61,7 @@
 
   <div style="margin-top: 15px;">
     Programmatically select:
-    {#each ['Home', 'Merchandise', 'About Us'] as tab}
+    {#each ['Home', 'Blog', 'About Us'] as tab}
       <Button on:click={() => (active = tab)}>
         <Label>{tab}</Label>
       </Button>
@@ -40,13 +70,3 @@
 
   <pre class="status">Selected: {active}</pre>
 </div>
-
-<Textfield bind:value={name} label="Name" />
-<br />
-<Textfield
-  type="email"
-  bind:value={email}
-  label="Email"
-  input$autocomplete="email" />
-<br />
-<Textfield textarea bind:value={comment} label="Comment" />
