@@ -30,6 +30,8 @@
     "dev": "webpack-dev-server --content-base public --single"
   },
   "dependencies": {
+    "@material/tab-bar": "^6.0.0",
+    "jquery": "^3.5.1",
     "page": "^1.11.6"
   }
 }
