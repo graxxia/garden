@@ -3,6 +3,8 @@
   import Tab, { Icon, Label } from "@smui/tab";
   import Textfield from "@smui/textfield";
 
+let loggedin = false;
+let usernameL;
  let error_boolean = false;
    let username = "";
   //   export let Username = "";
@@ -11,7 +13,7 @@
 
     const apiUrl = "http://localhost:5000/users/authenticate";
 //
-async function postData(url = '', data = {}) {
+export async function postData(url = '', data = {}) {
   // Default options are marked with *
   const response = await fetch(url, {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
@@ -40,6 +42,9 @@ async function postData(url = '', data = {}) {
         postData(apiUrl, { username: event.target.username.value, password: event.target.password.value })
   .then(data => {
     console.log(data); // JSON data parsed by `response.json()` call
+    console.log(data.username)
+    usernameL = data.username
+    loggedin = true;
   });
     }
    function validateMessageUsername(event) {
@@ -75,3 +80,7 @@ async function postData(url = '', data = {}) {
 
   <button type="submit">Login to account</button>
 </form>
+
+{#if loggedin}
+<p>Hey: {usernameL}</p>
+{/if}

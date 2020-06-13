@@ -1,8 +1,40 @@
 module.exports = () => {
-  var obj = require("./Hard542.json");
+  const obj1 = require("./HARD101.json");
+  const obj2 = require("./Hard529.json");
+  const obj3 = require("./Hard530.json");
+  const obj4 = require("./Hard534.json");
+  const obj5 = require("./Hard538.json");
+  const obj6 = require("./Hard542.json");
   const axios = require("axios");
+  const trefleKey = require("../config/trefleKey");
+
+  const obj = {
+    ...obj1,
+    ...obj2,
+    ...obj3,
+    ...obj4,
+    ...obj4,
+    ...obj5,
+    ...obj6,
+  };
+
+  const getTreflePlantByName = async (plantName) => {
+    let data = await axios.get(
+      `https://trefle.io/api/plants?q=${plantName}&token=${trefleKey.key}`,
+      {
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http://localhost:5000/",
+          origin: "http://localhost:5000/",
+        },
+      }
+    );
+    return data;
+  };
 
   const plants = [];
+
   //arr
   for (let i = 0; i < obj.selection1.length; i++) {
     let plant = {};
@@ -39,9 +71,20 @@ module.exports = () => {
 
       // Contents of classification, care, characteristics and regions
       classification.name = obj.selection1[i].selection4[0].name;
+
       classification.family = splitFamObj[0].substr(7).replace("(Info)", "");
-      classification.genusPos = splitFamObj[1].substr(7).replace("(Info)", "");
+      classification.genus = splitFamObj[1].substr(7).replace("(Info)", "");
       classification.species = splitFamObj[2].substr(9).replace("(Info)", "");
+
+      // Get Plant data from Trefle
+      let scientificName = obj.selection1[i].selection4[1].name;
+      const getPlantId = getTreflePlantByName(scientificName)
+        .then(function (result) {
+          if (result.data[0] !== undefined) console.log(result.data[0].id);
+        })
+        .catch((error) => console.log(error));
+
+      console.log(getPlantId);
       if (classification.synonym !== undefined) {
         classification.synonym = splitFamObj[3].substr(8).replace("(Info)", "");
       }
@@ -115,9 +158,33 @@ module.exports = () => {
       bloomTime: el.characteristics.bloomTime,
       otherDetails: el.characteristics.otherDetails,
       regions: el.regions,
+      // img here :)
     };
+  });
+  /*
     await axios
-      .post("http://localhost:5000/plant", body, {
+      .post( "http://localhost:5000/plant", body, {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE2Njg5MTN9.IRDiCY1zBWmpkKezjXh-lQmtdZooOFTCh7v5w8mZXrE",
+        },
+      } )
+      .then( ( res ) =>
+      {
+        console.log( `statusCode: ${ res.statusCode }` );
+        console.log( res );
+      } )
+      .catch( ( error ) =>
+      {
+        console.log( error );
+      } );
+  } );
+*/
+
+  /*
+  const updatePlantDb = async () => {
+    await axios
+      .put("http://localhost:5000/plant", body, {
         headers: {
           Authorization:
             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE2Njg5MTN9.IRDiCY1zBWmpkKezjXh-lQmtdZooOFTCh7v5w8mZXrE",
@@ -130,5 +197,8 @@ module.exports = () => {
       .catch((error) => {
         console.log(error);
       });
-  });
+  };
+  */
+
+  //store ids of each plant in db and then get each one by one, extract image url?, add it to our plant model after saving the existing one :S and update existing plants to have that url to image, front end calls that. Bingo bongo.
 };

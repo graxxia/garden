@@ -57,11 +57,12 @@ exports.findAll = (req, res) => {
 
 // Find a single plant with a plantId
 exports.findOne = (req, res) => {
-  Plant.findById(req.params.plantId)
+  let data = req.body.name;
+  Plant.find({ name: new RegExp(data, "i") })
     .then((plant) => {
       if (!plant) {
         return res.status(404).send({
-          message: "Plant not found with id " + req.params.plantId,
+          message: "Plant not found with name " + req.body.name,
         });
       }
       res.send(plant);
@@ -69,11 +70,11 @@ exports.findOne = (req, res) => {
     .catch((err) => {
       if (err.kind === "ObjectId") {
         return res.status(404).send({
-          message: "Plant not found with id " + req.params.plantId,
+          message: "Plant not found with name " + req.body.name,
         });
       }
       return res.status(500).send({
-        message: "Error retrieving plant with id " + req.params.plantId,
+        message: "Error retrieving plant with name " + req.body.name,
       });
     });
 };

@@ -30,6 +30,8 @@
     "dev": "webpack-dev-server --content-base public --single"
   },
   "dependencies": {
+    "@material/icon-button": "^6.0.0",
+    "@material/top-app-bar": "^6.0.0",
     "page": "^1.11.6"
   }
 }

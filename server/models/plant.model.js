@@ -18,6 +18,7 @@ const PlantSchema = new mongoose.Schema(
     propogation: String,
     collectionMethod: String,
     region: String,
+    img: String,
   },
   {
     timestamps: true,
