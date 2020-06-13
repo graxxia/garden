@@ -66,7 +66,6 @@
   }
 </style>
 
-<svelte:component this={page} />
 <svelte:head>
   <link
     rel="stylesheet"
@@ -89,7 +88,9 @@
 
 </nav>
 
-<main />
+<main>
+  <svelte:component this={page} {params} />
+</main>
 
 <div class="mdc-tab-bar" role="tablist">
   <div class="mdc-tab-scroller">
