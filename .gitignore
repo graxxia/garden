@@ -8,6 +8,7 @@ lerna-debug.log*
 
 #secret
 secret.db.config.js
+trefle.js
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

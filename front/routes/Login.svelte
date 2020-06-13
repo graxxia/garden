@@ -33,11 +33,6 @@
 
   //
   async function handleSubmit(event) {
-    console.log(event);
-    console.log(event.target);
-    console.log(event.target.username.value);
-    console.log(event.target.password.value);
-
     const userData = await postData(apiUrl, {
       username: event.target.username.value,
       password: event.target.password.value
@@ -65,7 +60,7 @@
 </script>
 
 <form
-  on:submit={handleSubmit}
+  on:submit|preventDefault={handleSubmit}
   on:invalid={validateMessageUsername}
   on:changed={validateMessageUsername}
   on:input={validateMessageUsername}>
