@@ -76,7 +76,3 @@
   <button type="submit">Login to account</button>
   <a href="/register">Register</a>
 </form>
-
-{#if loggedin}
-<p>Hey: {usernameL}</p>
-{/if}

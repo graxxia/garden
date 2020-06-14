@@ -5,7 +5,7 @@
 
   const apiUrl = "http://localhost:5000/plant/";
   let data = [];
-  let tData = [];
+
 
 async function fetchData(url= '', data = {}, method='') {
   // Default options are marked with *
@@ -27,24 +27,15 @@ async function fetchData(url= '', data = {}, method='') {
 
   onMount(async () => {
 const searchTerm = params.name;  
-const trefle = await fetch(`https://cors-anywhere.herokuapp.com/https://trefle.io/api/plants?q=${searchTerm}&token=${trefleKey}`, {
-  mode: "cors",
-  headers: {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin':"http://localhost:8080/"
-  }
-});
-console.log(trefle)
+
 const response = await fetchData(apiUrl, { name: searchTerm}, "post" );
 
     data = await response[0]
-    tData = await trefle.json();
-    console.log(tData)
     console.log(response)
   });
 
 </script>
-<img src="{tData.images}" alt="{tData}" />
+<img src="{data.image}" alt="{data.genus} {data.species}" />
 <h1>{data.name}</h1>
 <h3>Family</h3>
 <p>{data.family}</p>

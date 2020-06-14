@@ -13,7 +13,6 @@ module.exports = () => {
     ...obj2,
     ...obj3,
     ...obj4,
-    ...obj4,
     ...obj5,
     ...obj6,
   };
@@ -30,7 +29,21 @@ module.exports = () => {
         },
       }
     );
-    return data;
+    return await data;
+  };
+  const getTreflePlantById = async (id) => {
+    let data = await axios.get(
+      `https://trefle.io/api/plants/${id}?token=${trefleKey.key}`,
+      {
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http://localhost:5000/",
+          origin: "http://localhost:5000/",
+        },
+      }
+    );
+    return await data;
   };
 
   const plants = [];
@@ -42,6 +55,7 @@ module.exports = () => {
     let care = {};
     let characteristics = {};
     let regions = {};
+    let image = {};
 
     if (obj.selection1[i].selection4 !== undefined) {
       let splitObj = obj.selection1[i].selection4[5].name.split("\n");
@@ -78,13 +92,31 @@ module.exports = () => {
 
       // Get Plant data from Trefle
       let scientificName = obj.selection1[i].selection4[1].name;
-      const getPlantId = getTreflePlantByName(scientificName)
-        .then(function (result) {
-          if (result.data[0] !== undefined) console.log(result.data[0].id);
-        })
-        .catch((error) => console.log(error));
+      let getPlantId = async () => {
+        let treflePlantsPlant = await getTreflePlantByName(scientificName);
+        if ((await treflePlantsPlant.data[0]) !== undefined)
+          return await treflePlantsPlant.data[0].id;
+      };
 
-      console.log(getPlantId);
+      const plantUrlById = async () => {
+        let id = await getPlantId();
+        if (id === undefined) return;
+
+        let treflePlant = await getTreflePlantById(id);
+        if ((await treflePlant.data.images) === undefined || []) return;
+
+        return await treflePlant.data.images[0];
+      };
+
+      let plantUrl = plantUrlById()
+        .then((result) => {
+          console.log(result);
+          // ...
+        })
+        .catch((error) => {
+          // if you have an error
+        });
+
       if (classification.synonym !== undefined) {
         classification.synonym = splitFamObj[3].substr(8).replace("(Info)", "");
       }
@@ -126,41 +158,60 @@ module.exports = () => {
         .join();
 
       regions = splitObj.slice(regionCollectionPos + 2);
-      obj.selection1[i].selection4[0].name;
       plant.classification = classification;
       plant.care = care;
       plant.characteristics = characteristics;
       plant.regions = regions;
+
       plants.push(plant);
+      const uniq = [...new Set(plants)];
+      uniq.forEach(async (el) => {
+        let body = {
+          name: el.classification.name,
+          family: el.classification.family,
+          genus: el.classification.genus,
+          species: el.classification.species,
+          synonym: el.classification.synonym,
+          water: el.care.water,
+          category: el.classification.category,
+          sun: el.care.sun,
+          height: el.care.height,
+          spacing: el.care.spacing,
+          hardiness: el.care.hardiness,
+          soil: el.care.soil,
+          propogation: el.care.propogation,
+          collectionMethod: el.care.seeds,
+          foliage: el.care.foliage,
+          foliageColor: el.care.foliageColor,
+          bloomColor: el.characteristics.bloomColor,
+          otherDetails: el.characteristics.otherDetails,
+          regions: el.regions,
+          image: el.image,
+        };
+
+        /*
+   await axios
+      .post( "http://localhost:5000/plant", body, {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE2Njg5MTN9.IRDiCY1zBWmpkKezjXh-lQmtdZooOFTCh7v5w8mZXrE",
+        },
+      } )
+      .then( ( res ) =>
+      {
+        console.log( `statusCode: ${ res.statusCode }` );
+        console.log( res );
+      } )
+      .catch( ( error ) =>
+      {
+        console.log( error );
+      } );
+      */
+      });
     }
     //end arr
   }
-  const uniq = [...new Set(plants)];
-  uniq.forEach(async (el) => {
-    let body = {
-      name: el.classification.name,
-      family: el.classification.family,
-      genus: el.classification.genus,
-      species: el.classification.species,
-      synonym: el.classification.synonym,
-      water: el.care.water,
-      category: el.classification.category,
-      sun: el.care.sun,
-      height: el.care.height,
-      spacing: el.care.spacing,
-      hardiness: el.care.hardiness,
-      soil: el.care.soil,
-      propogation: el.care.propogation,
-      collectionMethod: el.care.seeds,
-      foliage: el.care.foliage,
-      foliageColor: el.care.foliageColor,
-      bloomColor: el.characteristics.bloomColor,
-      bloomTime: el.characteristics.bloomTime,
-      otherDetails: el.characteristics.otherDetails,
-      regions: el.regions,
-      // img here :)
-    };
-  });
+
   /*
     await axios
       .post( "http://localhost:5000/plant", body, {

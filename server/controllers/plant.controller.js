@@ -27,6 +27,7 @@ exports.create = (req, res) => {
     propogation: req.body.propogation,
     collectionMethod: req.body.collectionMethod,
     region: req.body.region,
+    image: req.body.image,
   });
 
   // Save Plant in the database
@@ -108,6 +109,7 @@ exports.update = (req, res) => {
       propogation: req.body.propogation,
       collectionMethod: req.body.collectionMethod,
       region: req.body.region,
+      image: req.body.image,
     },
     { new: true }
   )
