@@ -26,7 +26,10 @@
       loginMsg = "Successfully authenticated. :D";
       setCookie(
         "user-token",
-        JSON.stringify({ username: userData.username, token: userData.token }),
+        JSON.stringify({
+          username: userData.username,
+          token: userData.token
+        }),
         7
       );
       router.redirect("/");
