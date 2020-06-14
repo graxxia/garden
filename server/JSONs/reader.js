@@ -1,5 +1,4 @@
 module.exports = () => {
-
   const obj1 = require("./HARD101.json");
   const obj2 = require("./Hard529.json");
   const obj3 = require("./Hard530.json");
@@ -49,7 +48,6 @@ module.exports = () => {
 
   const plants = [];
 
-
   //arr
   for (let i = 0; i < obj.selection1.length; i++) {
     let plant = {};
@@ -88,7 +86,6 @@ module.exports = () => {
       // Contents of classification, care, characteristics and regions
       classification.name = obj.selection1[i].selection4[0].name;
 
-
       classification.family = splitFamObj[0].substr(7).replace("(Info)", "");
       classification.genus = splitFamObj[1].substr(7).replace("(Info)", "");
       classification.species = splitFamObj[2].substr(9).replace("(Info)", "");
@@ -119,7 +116,6 @@ module.exports = () => {
         .catch((error) => {
           // if you have an error
         });
-
 
       if (classification.synonym !== undefined) {
         classification.synonym = splitFamObj[3].substr(8).replace("(Info)", "");
@@ -162,12 +158,10 @@ module.exports = () => {
         .join();
 
       regions = splitObj.slice(regionCollectionPos + 2);
-
       plant.classification = classification;
       plant.care = care;
       plant.characteristics = characteristics;
       plant.regions = regions;
-
 
       plants.push(plant);
       const uniq = [...new Set(plants)];
@@ -242,7 +236,6 @@ module.exports = () => {
   const updatePlantDb = async () => {
     await axios
       .put("http://localhost:5000/plant", body, {
-
         headers: {
           Authorization:
             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE2Njg5MTN9.IRDiCY1zBWmpkKezjXh-lQmtdZooOFTCh7v5w8mZXrE",
@@ -255,10 +248,8 @@ module.exports = () => {
       .catch((error) => {
         console.log(error);
       });
-
   };
   */
 
   //store ids of each plant in db and then get each one by one, extract image url?, add it to our plant model after saving the existing one :S and update existing plants to have that url to image, front end calls that. Bingo bongo.
-
 };

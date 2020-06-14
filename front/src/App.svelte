@@ -4,6 +4,7 @@
   import Register from "./../routes/Register.svelte";
   import router from "page";
   import Login from "../routes/Login.svelte";
+  import Garden from "../routes/Garden.svelte";
   import { checkCookie, deleteCookie } from "../src/cookie";
   import { MDCTabBar } from "@material/tab-bar";
   import Plant from "../routes/plant.svelte";
@@ -46,6 +47,7 @@ const topAppBar = await new MDCTopAppBar(topAppBarElement);
   router("/login", () => (page = Login));
 
   router("/register", () => (page = Register));
+    router("/garden", () => (page = Garden));
 
   router.start();
 
@@ -69,10 +71,6 @@ const topAppBar = await new MDCTopAppBar(topAppBarElement);
     margin-left: auto;
     margin-right: auto;
   }
-
-
-
-  
 </style>
 
 <svelte:head>
@@ -132,7 +130,7 @@ const topAppBar = await new MDCTopAppBar(topAppBarElement);
                 <span class="mdc-tab__icon material-icons" aria-hidden="true">
                   eco
                 </span>
-                <psan href="/plant" class="mdc-tab__text-label">My Garden</psan>
+                <span href="/plant" class="mdc-tab__text-label">Plants</span>
               </span>
 
               <span class="mdc-tab-indicator mdc-tab-indicator--active">
@@ -166,6 +164,28 @@ const topAppBar = await new MDCTopAppBar(topAppBarElement);
             </a>
           {/if}
           {#if loggedIn}
+          <a href="/garden">
+           <button
+              class="mdc-tab mdc-tab--active"
+              role="tab"
+              aria-selected="true"
+              tabindex="0"
+              type="submit"
+           >
+              <span class="mdc-tab__content">
+                <span class="mdc-tab__icon material-icons" aria-hidden="true">
+                  local_florist
+                </span>
+                <span class="mdc-tab__text-label">My Garden</span>
+              </span>
+              <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                <span
+                  class="mdc-tab-indicator__content
+                  mdc-tab-indicator__content--underline" />
+              </span>
+              <span class="mdc-tab__ripple" />
+            </button>
+            </a>
             <button
               class="mdc-tab mdc-tab--active"
               role="tab"
