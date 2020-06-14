@@ -3,8 +3,6 @@
   import Home from "./../routes/Home.svelte";
   import Register from "./../routes/Register.svelte";
   import router from "page";
-  import Home from "../routes/Home.svelte";
-  import Plants from "../routes/Plants.svelte";
   import Login from "../routes/Login.svelte";
   import { checkCookie, deleteCookie } from "../src/cookie";
   import { MDCTabBar } from "@material/tab-bar";

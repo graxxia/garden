@@ -49,7 +49,7 @@ const response = await fetchData(apiUrl, { name: searchTerm}, "post" );
 <p>{data.spacing}</p>
 <h3>Sun Requirements</h3>
 <p>{data.sun}</p>
-<h3>Water Requirementss</h3>
+<h3>Water Requirements</h3>
 <p>{data.water}</p>
 <h3>Propogation</h3>
 <p>{data.propogation}</p>
