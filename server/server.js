@@ -48,5 +48,7 @@ const port =
   process.env.NODE_ENV === "production" ? process.env.PORT || 80 : 5000;
 app.listen(port, async function () {
   console.log("Server listening on port " + port);
-  const reader = require("./JSONs/reader")();
+
+  //const reader = require("./JSONs/reader")();
+
 });
