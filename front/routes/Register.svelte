@@ -2,35 +2,18 @@
   import Button from "@smui/button";
   import Tab, { Icon, Label } from "@smui/tab";
   import Textfield from "@smui/textfield";
-
+  import { postData } from "../src/serverReq";
   let error_boolean = false;
   let username = "";
   let password = "";
   let user = { loggedIn: false };
+  let loginMsg = "";
 
   function toggle() {
     user.loggedIn = !user.loggedIn;
   }
 
   const apiUrl = "http://localhost:5000/users/register";
-  //
-  async function postData(url = "", data = {}) {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json"
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
 
   //
   async function handleSubmit(event) {
@@ -42,15 +25,28 @@
     console.log(event.target.firstName.value);
     console.log(event.target.lastName.value);
 
-    postData(apiUrl, {
+    const userData = await postData(apiUrl, {
       username: event.target.username.value,
       password: event.target.password.value,
       email: event.target.email.value,
       firstName: event.target.firstName.value,
       lastName: event.target.lastName.value
-    }).then(data => {
-      console.log(data); // JSON data parsed by `response.json()` call
     });
+
+    console.log(userData);
+    if (userData.message === undefined) {
+      console.log(userData);
+      loginMsg = "Successfully register";
+      setCookie(
+        "user-token",
+        JSON.stringify({ username: userData.username, token: userData.token }),
+        7
+      );
+      router.redirect("/");
+    } else {
+      console.log(userData.message);
+      loginMsg = "Incorrect credentials";
+    }
   }
   function validateMessageUsername(event) {
     let textbox = event.target;
@@ -77,12 +73,12 @@
   <label for="username">Username</label>
   <input required type="username" id="username" />
   {#if error_boolean}
-    <h1>Username already taken</h1>
+    <h5>Username already taken</h5>
   {/if}
   <label for="email">Email:</label>
   <input type="email" id="email" />
   {#if error_boolean}
-    <h1>Plase add a valid email</h1>
+    <h5>Plase add a valid email</h5>
   {/if}
 
   <label for="password">Password</label>
@@ -99,4 +95,5 @@
     <button type="submit" on:click={toggle}>Register</button>
   {/if}
   <a href="/">Home</a>
+  <label>{loginMsg}</label>
 </form>

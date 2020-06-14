@@ -2,34 +2,16 @@
   import Button from "@smui/button";
   import Tab, { Icon, Label } from "@smui/tab";
   import Textfield from "@smui/textfield";
-  import { setCookie } from "../src/cookie.js";
+  import { setCookie, checkCookie } from "../src/cookie.js";
   import router from "page";
+  import { postData } from "../src/serverReq";
 
   let error_boolean = false;
   let username = "";
-  //   export let Username = "";
   let password = "";
-  //   export let comment = "";
+  let loginMsg = "";
 
   const apiUrl = "http://localhost:5000/users/authenticate";
-  //
-  async function postData(url = "", data = {}) {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: "POST", // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json"
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
 
   //
   async function handleSubmit(event) {
@@ -37,12 +19,21 @@
       username: event.target.username.value,
       password: event.target.password.value
     });
-    setCookie(
-      "user-token",
-      JSON.stringify({ username: userData.username, token: userData.token }),
-      7
-    );
-    router.redirect("/");
+
+    console.log(userData);
+    if (userData.message === undefined) {
+      console.log(userData);
+      loginMsg = "Successfully authenticated. :D";
+      setCookie(
+        "user-token",
+        JSON.stringify({ username: userData.username, token: userData.token }),
+        7
+      );
+      router.redirect("/");
+    } else {
+      console.log(userData.message);
+      loginMsg = "Incorrect credentials D:";
+    }
   }
   function validateMessageUsername(event) {
     let textbox = event.target;
@@ -75,4 +66,7 @@
 
   <button type="submit">Login to account</button>
   <a href="/register">Register</a>
+
+  <br />
+  <label>{loginMsg}</label>
 </form>
