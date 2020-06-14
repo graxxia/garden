@@ -1,8 +1,55 @@
 module.exports = () => {
-  var obj = require("./Hard542.json");
+
+  const obj1 = require("./HARD101.json");
+  const obj2 = require("./Hard529.json");
+  const obj3 = require("./Hard530.json");
+  const obj4 = require("./Hard534.json");
+  const obj5 = require("./Hard538.json");
+  const obj6 = require("./Hard542.json");
   const axios = require("axios");
+  const trefleKey = require("../config/trefleKey");
+
+  const obj = {
+    ...obj1,
+    ...obj2,
+    ...obj3,
+    ...obj4,
+    ...obj5,
+    ...obj6,
+  };
+
+  const getTreflePlantByName = async (plantName) => {
+    let data = await axios.get(
+      `https://trefle.io/api/plants?q=${plantName}&token=${trefleKey.key}`,
+      {
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http://localhost:5000/",
+          origin: "http://localhost:5000/",
+        },
+      }
+    );
+    return await data;
+  };
+  const getTreflePlantById = async (id) => {
+    let data = await axios.get(
+      `https://trefle.io/api/plants/${id}?token=${trefleKey.key}`,
+      {
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "http://localhost:5000/",
+          origin: "http://localhost:5000/",
+        },
+      }
+    );
+    return await data;
+  };
 
   const plants = [];
+
+
   //arr
   for (let i = 0; i < obj.selection1.length; i++) {
     let plant = {};
@@ -10,6 +57,7 @@ module.exports = () => {
     let care = {};
     let characteristics = {};
     let regions = {};
+    let image = {};
 
     if (obj.selection1[i].selection4 !== undefined) {
       let splitObj = obj.selection1[i].selection4[5].name.split("\n");
@@ -39,9 +87,40 @@ module.exports = () => {
 
       // Contents of classification, care, characteristics and regions
       classification.name = obj.selection1[i].selection4[0].name;
+
+
       classification.family = splitFamObj[0].substr(7).replace("(Info)", "");
-      classification.genusPos = splitFamObj[1].substr(7).replace("(Info)", "");
+      classification.genus = splitFamObj[1].substr(7).replace("(Info)", "");
       classification.species = splitFamObj[2].substr(9).replace("(Info)", "");
+
+      // Get Plant data from Trefle
+      let scientificName = obj.selection1[i].selection4[1].name;
+      let getPlantId = async () => {
+        let treflePlantsPlant = await getTreflePlantByName(scientificName);
+        if ((await treflePlantsPlant.data[0]) !== undefined)
+          return await treflePlantsPlant.data[0].id;
+      };
+
+      const plantUrlById = async () => {
+        let id = await getPlantId();
+        if (id === undefined) return;
+
+        let treflePlant = await getTreflePlantById(id);
+        if ((await treflePlant.data.images) === undefined || []) return;
+
+        return await treflePlant.data.images[0];
+      };
+
+      let plantUrl = plantUrlById()
+        .then((result) => {
+          console.log(result);
+          // ...
+        })
+        .catch((error) => {
+          // if you have an error
+        });
+
+
       if (classification.synonym !== undefined) {
         classification.synonym = splitFamObj[3].substr(8).replace("(Info)", "");
       }
@@ -83,41 +162,87 @@ module.exports = () => {
         .join();
 
       regions = splitObj.slice(regionCollectionPos + 2);
-      obj.selection1[i].selection4[0].name;
+
       plant.classification = classification;
       plant.care = care;
       plant.characteristics = characteristics;
       plant.regions = regions;
+
+
       plants.push(plant);
+      const uniq = [...new Set(plants)];
+      uniq.forEach(async (el) => {
+        let body = {
+          name: el.classification.name,
+          family: el.classification.family,
+          genus: el.classification.genus,
+          species: el.classification.species,
+          synonym: el.classification.synonym,
+          water: el.care.water,
+          category: el.classification.category,
+          sun: el.care.sun,
+          height: el.care.height,
+          spacing: el.care.spacing,
+          hardiness: el.care.hardiness,
+          soil: el.care.soil,
+          propogation: el.care.propogation,
+          collectionMethod: el.care.seeds,
+          foliage: el.care.foliage,
+          foliageColor: el.care.foliageColor,
+          bloomColor: el.characteristics.bloomColor,
+          otherDetails: el.characteristics.otherDetails,
+          regions: el.regions,
+          image: el.image,
+        };
+
+        /*
+   await axios
+      .post( "http://localhost:5000/plant", body, {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE2Njg5MTN9.IRDiCY1zBWmpkKezjXh-lQmtdZooOFTCh7v5w8mZXrE",
+        },
+      } )
+      .then( ( res ) =>
+      {
+        console.log( `statusCode: ${ res.statusCode }` );
+        console.log( res );
+      } )
+      .catch( ( error ) =>
+      {
+        console.log( error );
+      } );
+      */
+      });
     }
     //end arr
   }
-  const uniq = [...new Set(plants)];
-  uniq.forEach(async (el) => {
-    let body = {
-      name: el.classification.name,
-      family: el.classification.family,
-      genus: el.classification.genus,
-      species: el.classification.species,
-      synonym: el.classification.synonym,
-      water: el.care.water,
-      category: el.classification.category,
-      sun: el.care.sun,
-      height: el.care.height,
-      spacing: el.care.spacing,
-      hardiness: el.care.hardiness,
-      soil: el.care.soil,
-      propogation: el.care.propogation,
-      collectionMethod: el.care.seeds,
-      foliage: el.care.foliage,
-      foliageColor: el.care.foliageColor,
-      bloomColor: el.characteristics.bloomColor,
-      bloomTime: el.characteristics.bloomTime,
-      otherDetails: el.characteristics.otherDetails,
-      regions: el.regions,
-    };
+
+  /*
     await axios
-      .post("http://localhost:5000/plant", body, {
+      .post( "http://localhost:5000/plant", body, {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE2Njg5MTN9.IRDiCY1zBWmpkKezjXh-lQmtdZooOFTCh7v5w8mZXrE",
+        },
+      } )
+      .then( ( res ) =>
+      {
+        console.log( `statusCode: ${ res.statusCode }` );
+        console.log( res );
+      } )
+      .catch( ( error ) =>
+      {
+        console.log( error );
+      } );
+  } );
+*/
+
+  /*
+  const updatePlantDb = async () => {
+    await axios
+      .put("http://localhost:5000/plant", body, {
+
         headers: {
           Authorization:
             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE2Njg5MTN9.IRDiCY1zBWmpkKezjXh-lQmtdZooOFTCh7v5w8mZXrE",
@@ -130,5 +255,10 @@ module.exports = () => {
       .catch((error) => {
         console.log(error);
       });
-  });
+
+  };
+  */
+
+  //store ids of each plant in db and then get each one by one, extract image url?, add it to our plant model after saving the existing one :S and update existing plants to have that url to image, front end calls that. Bingo bongo.
+
 };

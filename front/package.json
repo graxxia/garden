@@ -27,6 +27,12 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --content-base public"
+    "dev": "webpack-dev-server --content-base public --single"
+  },
+  "dependencies": {
+    "@material/icon-button": "^6.0.0",
+    "@material/top-app-bar": "^6.0.0",
+    "@material/tab-bar": "^6.0.0",
+    "page": "^1.11.6"
   }
 }
