@@ -1,41 +1,40 @@
 <script>
-	import { trefleKey } from './../APIkeys/trefle.js';
+  import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
   export let params;
 
   const apiUrl = "http://localhost:5000/plant/";
   let data = [];
 
-
-async function fetchData(url= '', data = {}, method='') {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: method, // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json'
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
-  });
-  return response.json(); // parses JSON response into native JavaScript objects
-}
+  async function fetchData(url = "", data = {}, method = "") {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: method, // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json"
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
 
   onMount(async () => {
-const searchTerm = params.name;  
+    const searchTerm = params.name;
 
-const response = await fetchData(apiUrl, { name: searchTerm}, "post" );
+    const response = await fetchData(apiUrl, { name: searchTerm }, "post");
 
-    data = await response[0]
-    console.log(response)
+    data = await response[0];
+    console.log(response);
   });
-
 </script>
-<img src="{data.image}" alt="{data.genus} {data.species}" />
+
+<img src={data.image} alt="{data.genus} {data.species}" />
 <h1>{data.name}</h1>
 <h3>Family</h3>
 <p>{data.family}</p>
