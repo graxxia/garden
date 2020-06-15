@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+var Schema = mongoose.Schema;
 
 const ContainerSchema = new mongoose.Schema(
   {
@@ -6,7 +7,8 @@ const ContainerSchema = new mongoose.Schema(
     depth: String,
     height: String,
     length: String,
-    id: Int32Array,
+    id: String,
+    plants: [{ type: Schema.Types.ObjectId, ref: "Plant" }],
   },
   {
     timestamps: true,

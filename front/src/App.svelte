@@ -13,7 +13,6 @@
 
   onMount(async () => {
     const topAppBarElement = await document.querySelector(".mdc-top-app-bar");
-    const topAppBar = await new MDCTopAppBar(topAppBarElement);
   });
   let active = "Home";
   let page;
@@ -151,29 +150,8 @@
                 <span class="mdc-tab__ripple" />
               </button>
             </a>
-            <a href="/plants" class="mdc-tab">
-              <button
-                class="mdc-tab mdc-tab--active"
-                role="tab"
-                aria-selected="true"
-                tabindex="0">
-                <span class="mdc-tab__content">
-                  <span class="mdc-tab__icon material-icons" aria-hidden="true">
-                    spa
-                  </span>
-                  <psan href="/plant" class="mdc-tab__text-label">
-                    My Garden
-                  </psan>
-                </span>
+            
 
-                <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                  <span
-                    class="mdc-tab-indicator__content
-                    mdc-tab-indicator__content--underline" />
-                </span>
-                <span class="mdc-tab__ripple" />
-              </button>
-            </a>
             {#if !loggedIn}
               <a href="/login" class="mdc-tab">
                 <button
@@ -199,6 +177,29 @@
               </a>
             {/if}
             {#if loggedIn}
+                        <a href="/garden" class="mdc-tab">
+              <button
+                class="mdc-tab mdc-tab--active"
+                role="tab"
+                aria-selected="true"
+                tabindex="0">
+                <span class="mdc-tab__content">
+                  <span class="mdc-tab__icon material-icons" aria-hidden="true">
+                    spa
+                  </span>
+                  <span href="/garden" class="mdc-tab__text-label">
+                    My Garden
+                  </span>
+                </span>
+
+                <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                  <span
+                    class="mdc-tab-indicator__content
+                    mdc-tab-indicator__content--underline" />
+                </span>
+                <span class="mdc-tab__ripple" />
+              </button>
+            </a>
               <button
                 class="mdc-tab mdc-tab--active"
                 role="tab"
@@ -219,6 +220,7 @@
                 </span>
                 <span class="mdc-tab__ripple" />
               </button>
+              
             {/if}
           </div>
         </div>

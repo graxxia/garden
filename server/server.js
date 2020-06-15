@@ -36,6 +36,7 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/plant.routes.js")(app);
+require("./routes/container.routes.js")(app);
 
 // listen for requests
 
@@ -50,5 +51,4 @@ app.listen(port, async function () {
   console.log("Server listening on port " + port);
 
   //const reader = require("./JSONs/reader")();
-
 });
