@@ -14,9 +14,11 @@
 <h1>Plants</h1>
 
 {#each data as item}
-  <div>
-    <h5>
-      <a href="/plant/{item.name.substr(0, item.name.indexOf(" "))}">{item.name}</a>
-    </h5>
+  <div class="mdc-layout-grid">
+
+    <a href="/plant/{item.name.substr(0, item.name.indexOf(' '))}">
+      {item.name}
+    </a>
+
   </div>
 {/each}

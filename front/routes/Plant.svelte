@@ -1,4 +1,5 @@
 <script>
+  import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
   export let params;
 
@@ -33,25 +34,27 @@
   });
 </script>
 
-<img src={data.image} alt="{data.genus} {data.species}" />
-<h1>{data.name}</h1>
-<h3>Family</h3>
-<p>{data.family}</p>
-<h3>Species</h3>
-<p>{data.species}</p>
-<h3>Category</h3>
-<p>{data.category}</p>
-<h3>Height</h3>
-<p>{data.height}</p>
-<h3>Spacing</h3>
-<p>{data.spacing}</p>
-<h3>Sun Requirements</h3>
-<p>{data.sun}</p>
-<h3>Water Requirements</h3>
-<p>{data.water}</p>
-<h3>Propogation</h3>
-<p>{data.propogation}</p>
-<h3>Collection Method</h3>
-<p>{data.collectionMethod}</p>
-<h3>Hardiness</h3>
-<p>{data.hardiness}</p>
+<div class="mdc-layout-grid">
+  <img src={data.image} alt="{data.genus} {data.species}" />
+  <h1>{data.name}</h1>
+  <h3>Family</h3>
+  <p>{data.family}</p>
+  <h3>Species</h3>
+  <p>{data.species}</p>
+  <h3>Category</h3>
+  <p>{data.category}</p>
+  <h3>Height</h3>
+  <p>{data.height}</p>
+  <h3>Spacing</h3>
+  <p>{data.spacing}</p>
+  <h3>Sun Requirements</h3>
+  <p>{data.sun}</p>
+  <h3>Water Requirements</h3>
+  <p>{data.water}</p>
+  <h3>Propogation</h3>
+  <p>{data.propogation}</p>
+  <h3>Collection Method</h3>
+  <p>{data.collectionMethod}</p>
+  <h3>Hardiness</h3>
+  <p>{data.hardiness}</p>
+</div>

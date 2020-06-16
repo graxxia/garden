@@ -1,5 +1,4 @@
 <script>
-  import Button from "@smui/button";
   import Tab, { Icon, Label } from "@smui/tab";
   import Textfield from "@smui/textfield";
   import { setCookie, checkCookie } from "../src/cookie.js";
@@ -20,7 +19,9 @@
       password: event.target.password.value
     });
 
+    console.log(userData);
     if (userData.message === undefined) {
+      console.log(userData);
       loginMsg = "Successfully authenticated. :D";
       setCookie(
         "user-token",
@@ -32,6 +33,7 @@
       );
       router.redirect("/");
     } else {
+      console.log(userData.message);
       loginMsg = "Incorrect credentials D:";
     }
   }
@@ -50,23 +52,39 @@
   }
 </script>
 
-<form
-  on:submit={handleSubmit}
-  on:invalid={validateMessageUsername}
-  on:changed={validateMessageUsername}
-  on:input={validateMessageUsername}>
-  <label for="username">Username</label>
-  <input required type="username" id="username" />
-  {#if error_boolean}
-    <h1>OH NO! AN ERRROR!</h1>
-  {/if}
+<div class="mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
 
-  <label for="password">Password</label>
-  <input required type="password" id="password" />
+    <div class="mdc-layout-grid__cell" />
+    <div class="mdc-layout-grid__cell">
 
-  <button type="submit">Login to account</button>
-  <a href="/register">Register</a>
+      <form
+        on:submit={handleSubmit}
+        on:invalid={validateMessageUsername}
+        on:changed={validateMessageUsername}
+        on:input={validateMessageUsername}>
 
-  <br />
-  <label>{loginMsg}</label>
-</form>
+        <label for="username">USERNAME</label>
+        <input required type="username" id="username" />
+        {#if error_boolean}
+          <h1>OH NO! AN ERRROR!</h1>
+        {/if}
+
+        <label for="password">PASSWORD</label>
+        <input required type="password" id="password" />
+        <br />
+        <button type="submit" class="mdc-button mdc-button--raised">
+          <span class="mdc-button__label">Login to account</span>
+        </button>
+        <br />
+        <a href="/register" class="mdc-button ">Register</a>
+
+        <br />
+        <label>{loginMsg}</label>
+      </form>
+    </div>
+    <div class="mdc-layout-grid__cell" />
+
+  </div>
+
+</div>
