@@ -20,9 +20,7 @@
       password: event.target.password.value
     });
 
-    console.log(userData);
     if (userData.message === undefined) {
-      console.log(userData);
       loginMsg = "Successfully authenticated. :D";
       setCookie(
         "user-token",
@@ -34,7 +32,6 @@
       );
       router.redirect("/");
     } else {
-      console.log(userData.message);
       loginMsg = "Incorrect credentials D:";
     }
   }
@@ -54,7 +51,7 @@
 </script>
 
 <form
-  on:submit|preventDefault={handleSubmit}
+  on:submit={handleSubmit}
   on:invalid={validateMessageUsername}
   on:changed={validateMessageUsername}
   on:input={validateMessageUsername}>
