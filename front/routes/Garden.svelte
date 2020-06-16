@@ -11,12 +11,13 @@
   let data = []; 
   let loggedIn = checkCookie("user-token");
   let userData;
+  let containerData = [];
   let cookieVal;
   let userId;
-  async function fetchData(url= '', token, method='') {
+  async function getData(url= '', token) {
   // Default options are marked with *
   const response = await fetch(url, {
-    method: method, // *GET, POST, PUT, DELETE, etc.
+    method: "GET", //POST, PUT, DELETE, etc.
     mode: 'cors', // no-cors, *cors, same-origin
     cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
     credentials: 'same-origin', // include, *same-origin, omit
@@ -32,25 +33,45 @@
   return response.json(); // parses JSON response into native JavaScript objects
 }
 
+  async function fetchData(url = "", data = {}, method = "") {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: method, // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json"
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    });
+    r
+  return response.json(); // parses JSON response into native JavaScript objects
+}
+
   async function handleSubmit(event) {
 
+    event.target.uom.value
 
     const containerData = await fetchData(`http://localhost:5000/container/create/${cookieVal}`, {
       name: event.target.name.value,
       depth: event.target.depth.value,
       height: event.target.height.value,
       length: event.target.length.value,
-      id: event.target.password.value // get this from cookie
+      id: userId
     }, "POST");
   }
 function validateMessageUsername(event) {
     let textbox = event.target;
     error_boolean = false;
     if (textbox.value === "") {
-      textbox.setCustomValidity("Required username");
+      textbox.setCustomValidity("Required field");
     } else if (textbox.validity.typeMismatch) {
       error_boolean = true;
-      textbox.setCustomValidity("please enter a valid username");
+      textbox.setCustomValidity("please enter a valid name");
     } else {
       textbox.setCustomValidity("");
     }
@@ -62,8 +83,10 @@ const searchTerm = params;
 if(loggedIn) {
 getCookie("user-token");
     cookieVal =  JSON.parse(getCookie("user-token"));
-     userData = await fetchData(`http://localhost:5000/users/name/${cookieVal.username}`, cookieVal.token, "GET");
-    userId = userData.id
+    userData = await getData(`http://localhost:5000/users/name/${cookieVal.username}`, cookieVal.token);
+    userId = await userData.id
+    containerData = await getData(`http://localhost:5000/container/${userId}`, cookieVal.token)
+    console.log(containerData[0].name)
     // check if they already have containers
     // if they do, display those with the {#each container} shenanigans
     // make those containers editable
@@ -98,6 +121,12 @@ display: none
     <h1>OH NO! AN ERRROR!</h1>
   {/if}
 
+  <label>Choose a Unit of Measurement:</label>
+  <select name="Measurement unit" id="uom">
+  <option value="metric">Metric</option>
+  <option value="Imperial">Imperial</option>
+  </select>
+
   <label for="depth">Depth</label>
   <input required type="depth" id="depth" />
 
@@ -109,7 +138,18 @@ display: none
 
   <button type="submit">Create container</button>
 
-  <br />
   <label>{loginMsg}</label></form>
+
+  {#await containerData}
+  <p>...Fetching your containers!</p>
+  {:then containers}
+  {#each containers as container}
+  <p>{container.name}</p>
+  {/each}
+  {:catch error}
+  	<p style="color: red">{error.message}</p>
+{/await}
+
 <Fab on:click={doSomething} id="reveal-form"><Icon class="material-icons">add</Icon></Fab>
 {/if}
+
