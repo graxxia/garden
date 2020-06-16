@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-var Schema = mongoose.Schema;
 
 const ContainerSchema = new mongoose.Schema(
   {
@@ -8,7 +7,7 @@ const ContainerSchema = new mongoose.Schema(
     height: String,
     length: String,
     id: String,
-    plants: [{ type: Schema.Types.ObjectId, ref: "Plant" }],
+    plants: Array,
   },
   {
     timestamps: true,
