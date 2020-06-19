@@ -9,6 +9,7 @@ module.exports = (app) => {
 
   // Retrieve a single plant with plant name
   app.get("/plant/:name", plant.findOne);
+  app.get("/plant/id/:id", plant.find);
 
   // Retrieve a plant with plant name body
   app.post("/plant", plant.findOne);

@@ -1,5 +1,5 @@
 const Container = require("../models/container.model");
-
+const Plant = require("../models/plant.model");
 // Create and Save a new Container
 exports.create = (req, res) => {
   // Validate request
@@ -15,9 +15,12 @@ exports.create = (req, res) => {
     depth: req.body.depth,
     height: req.body.height,
     length: req.body.length,
+    uom: req.body.uom,
     id: req.body.id,
     plants: req.body.plants,
   });
+
+  const plant = new Plant({});
 
   // Save Container in the database
   container
@@ -88,6 +91,7 @@ exports.update = (req, res) => {
       depth: req.body.depth,
       height: req.body.height,
       length: req.body.length,
+      uom: req.body.uom,
       id: req.body.id,
       plants: req.body.plants,
     },

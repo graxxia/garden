@@ -80,6 +80,29 @@ exports.findOne = (req, res) => {
     });
 };
 
+exports.find = (req, res) => {
+  let data = req.body.id;
+  Plant.find({ id: new RegExp(data, "i") })
+    .then((plant) => {
+      if (!plant) {
+        return res.status(404).send({
+          message: "Plant not found with id " + req.params.id,
+        });
+      }
+      res.send(plant);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "Plant not found with id " + req.params.id,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving plant with id " + req.params.id,
+      });
+    });
+};
+
 // Update a plant identified by the plantId in the request
 exports.update = (req, res) => {
   // Validate Request

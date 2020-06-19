@@ -9,6 +9,7 @@
   let username = "";
   let password = "";
   let loginMsg = "";
+  let loggedIn = checkCookie("user-token");
 
   const apiUrl = "http://localhost:5000/users/authenticate";
 
@@ -19,9 +20,7 @@
       password: event.target.password.value
     });
 
-    console.log(userData);
     if (userData.message === undefined) {
-      console.log(userData);
       loginMsg = "Successfully authenticated. :D";
       setCookie(
         "user-token",
@@ -59,7 +58,7 @@
     <div class="mdc-layout-grid__cell">
 
       <form
-        on:submit={handleSubmit}
+        on:submit|preventDefault={handleSubmit}
         on:invalid={validateMessageUsername}
         on:changed={validateMessageUsername}
         on:input={validateMessageUsername}>
@@ -82,6 +81,10 @@
         <br />
         <label>{loginMsg}</label>
       </form>
+      
+  {#if loggedIn}
+  <p>You're logged in already!</p> <a href="/garden">Visit your garden page?</a>
+  {/if}
     </div>
     <div class="mdc-layout-grid__cell" />
 
