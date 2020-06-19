@@ -1,5 +1,5 @@
 <script>
-	import { trefleKey } from './../APIkeys/trefle.js';
+  import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
   import Fab, {Icon} from '@smui/fab';
   import Select, {Option} from '@smui/select';
@@ -7,10 +7,25 @@
   import { getCookie, checkCookie } from "../src/cookie.js";
   export let params;
 
+  import Card, {
+    Content,
+    PrimaryAction,
+    Media,
+    MediaContent,
+    Actions,
+    ActionButtons,
+    ActionIcons
+  } from "@smui/card";
+  import Button, { Label } from "@smui/button";
+  import IconButton from "@smui/icon-button";
+  import List, { Item, Text } from "@smui/list";
+
+  let leafimage = "leaf.jpg";
+
   let error_boolean = false;
   let loginMsg = "";
   const apiUrl = "http://localhost:5000/container/";
-  let data = []; 
+  let data = [];
   let loggedIn = checkCookie("user-token");
   let userData;
   let containerData = [];
@@ -98,7 +113,7 @@ function validateMessageUsername(event) {
       textbox.setCustomValidity("");
     }
     return true;
-}
+  }
 
   onMount(async () => {
 const searchTerm = params;  
@@ -121,134 +136,188 @@ getCookie("user-token");
   });
 
   function doSomething() {
-    document.getElementById("createForm").classList.remove("hidden")
-    document.getElementById("reveal-form").classList.add("hidden")
+    document.getElementById("createForm").classList.remove("hidden");
+    document.getElementById("reveal-form").classList.add("hidden");
   }
-
-  
 </script>
 
 <style>
-.hidden{
-display: none  
-}
+  .hidden {
+    display: none;
+  }
+
+  .card-container {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+    min-width: 380px;
+    background-color: #f8f8f8;
+    margin-right: 20px;
+    margin-bottom: 20px;
+  }
+
+  p {
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .addcontainer {
+    text-align: center;
+  }
+
+  * :global(.card-media-16x9) {
+    background-image: url("/leaf.jpg");
+    height: 250px;
+  }
+
+  label,
+  option,
+  select {
+    margin: 0.5em 0px;
+    text-transform: uppercase;
+  }
 </style>
 
-{#if loggedIn}
-<form id="createForm" class="hidden" on:submit|preventDefault={handleSubmit}
-  on:invalid={validateMessageUsername}
-  on:changed={validateMessageUsername}
-  on:input={validateMessageUsername}>
-  <label> Input dimensions of your plant's container.</label>
-  <label for="name">Name</label>
+<div class="mdc-layout-grid">
 
-  <input required type="name" id="name" />
-    <br/>
-  {#if error_boolean}
-    <h1>OH NO! AN ERRROR!</h1>
-  {/if}
+  <!--   {#if loggedIn}
+    <form
+      id="createForm"
+      class="hidden"
+      on:submit|preventDefault={handleSubmit}
+      on:invalid={validateMessageUsername}
+      on:changed={validateMessageUsername}
+      on:input={validateMessageUsername}>
+      <label>Input dimensions of your plant's container.</label>
+      <label for="name">Name</label>
+      <input required type="name" id="name" />
+      {#if error_boolean}
+        <h1>OH NO! AN ERRROR!</h1>
+      {/if}
 
-  <label>Choose a Unit of Measurement:</label>
-  <Select bind:value={uomChoice} label="Unit cm/in">
-  <Option value=uomChoice></Option>
-  {#each uom as measurement}
-    <Option value={measurement} selected={uomChoice === measurement}>{measurement}</Option>
-  {/each}
-</Select>
+      <label>Choose a Unit of Measurement:</label>
+      <select name="Measurement unit" id="uom">
+        <option value="metric">Metric</option>
+        <option value="Imperial">Imperial</option>
+      </select>
 
-<Textfield bind:value={name} label="Name" input$autocomplete="name" />  
-<br />
-<Textfield type="depth" bind:value={depth} label="Depth"  /> 
-<br />
-<Textfield  type="height" bind:value={height} label="Height" />
-<br />
-<Textfield type="length"  bind:value={length} label="Length" />
-<br/>
-  <Fab  type="submit" ripple:true extended:true  label="Create Container"><Icon class="material-icons">save</Icon></Fab>
-
-</form>
-
-{#await containerData}
-<p>...Fetching your containers!</p>
-{:then containers}
-
-{#await plantData}
-<p>Getting your plants...</p>
-{:then plant}
-
-  {#each containers as container}
-
-<form id="editForm"  on:submit|preventDefault={handleUpdate}
-  on:invalid={validateMessageUsername}
-  on:changed={validateMessageUsername}
-  on:input={validateMessageUsername}>
-  <label> Input dimensions of your plant's container.</label>
-
-  <label for="name"></label>
-  <label>Name</label>
-  <input required type="name" id="eName" value={container.name} />
-  {#if error_boolean}
-    <h1>OH NO! AN ERRROR!</h1>
-  {/if}
-
-
-  <label>Unit of Measurement:</label>
-  {#if container.uom == "Metric"}
-<select name="uom" id="uom">
-
-  <option value="Metric" selected="selected">Metric</option>
-  <option value="Empirial">Empirial</option>
-    <label for="depth">Depth</label>
-  <input required type="depth" id="eDepth-{container.id}" value={container.depth} />
-
-    <label for="height">Height</label>
-  <input required type="height" id="eHeight-{container.id}" value={container.height}/>
-
-    <label for="length">Length</label>
-  <input required type="length" id="eLength-{container.id}" value={container.length}/>
-  </select>
-  {:else}
-  <select name="uom" id="uom">
-
- <option value="Metric">Metric</option>
-  <option value="Empirial" selected="selected">Empirial</option>
       <label for="depth">Depth</label>
-  <input required type="depth" id="eDepth"value={container.depth} />
+      <input required type="depth" id="depth" />
 
-    <label for="height">Height</label>
-  <input required type="height" id="eHeight" value={container.height}/>
+      <label for="height">Height</label>
+      <input required type="height" id="height" />
 
-    <label for="length">Length</label>
-  <input required type="length" id="eLength" value={container.length}/>
-  </select>
+      <label for="length">Length</label>
+      <input required type="length" id="length" />
+
+      <button type="submit">Create container</button>
+
+      <label>{loginMsg}</label>
+    </form>
+
+    {#await containerData}
+      <p>...Fetching your containers!</p>
+    {:then containers}
+      {#each containers as container}
+        <p>{container.name}</p>
+      {/each}
+    {:catch error}
+      <p style="color: red">{error.message}</p>
+    {/await}
+
+    <Fab on:click={doSomething} id="reveal-form">
+      <Icon class="material-icons">add</Icon>
+    </Fab>
   {/if}
+ -->
+  <h1>My Garden</h1>
+  {#if loggedIn}
+    <div class="card-container">
 
+      <Card style="width: 400px;">
+        <PrimaryAction>
+          <Media class="card-media-16x9" aspectRatio="16x9" />
+          <Content class="mdc-typography--body2">
+            <h1 class="mdc-typography--headline6" style="margin: 0;">
+              <span class="mdc-tab__icon material-icons" aria-hidden="true">
+                spa
+              </span>
+              My Garden
+            </h1>
+            <h2
+              class="mdc-typography--subtitle2"
+              style="margin: 0 0 10px; color: #888;">
+              My Plant
+            </h2>
+            <p>Input dimensions of your plant's container:</p>
+          </Content>
+        </PrimaryAction>
+        <Actions>
+          <form
+            id="createForm"
+            class="hidden"
+            on:submit|preventDefault={handleSubmit}
+            on:invalid={validateMessageUsername}
+            on:changed={validateMessageUsername}
+            on:input={validateMessageUsername}>
 
-  <label for="depth">Depth</label>
-  <input required type="depth" id="eDepth"value={container.depth} />
+            <label for="name">Name</label>
+            <input required type="name" id="name" />
+            {#if error_boolean}
+              <p>OH NO! AN ERRROR!</p>
+            {/if}
 
-    <label for="height">Height</label>
-  <input required type="height" id="eHeight" value={container.height}/>
+            <label>Choose a Unit of Measurement:</label>
+            <select name="Measurement unit" id="uom">
+              <option value="metric">Metric</option>
+              <option value="Imperial">Imperial</option>
+            </select>
 
-    <label for="length">Length</label>
-  <input required type="length" id="eLength" value={container.length}/>
-{#each container.plants as cplant}
-    <label for="plant">Plant</label>
-  <input required type="plant" id="ePlant-{cplant}" value={plant.name}/>
-{/each}
- <br/>
-  <Fab  type="submit" ripple:true extended:true  ><Icon class="material-icons">edit</Icon></Fab>
+            <label for="depth">Depth</label>
+            <input required type="depth" id="depth" />
 
-</form>
+            <label for="height">Height</label>
+            <input required type="height" id="height" />
 
-  {/each}
-  {:catch error}
-  	<p style="color: red">{error.message}</p>
-{/await}
-  {:catch error}
-  	<p style="color: red">{error.message}</p>
-{/await}
+            <label for="length">Length</label>
+            <input required type="length" id="length" />
 
-<Fab on:click={doSomething} exited:true ripple:true id="reveal-form"><Icon class="material-icons">add</Icon></Fab>
-{/if}
+            <ActionButtons>
+              <div>
+                <Button
+                  type="submit"
+                  class="mdc-button mdc-button--raised"
+                  style="margin-top:15px;">
+                  <span class="mdc-button__label">Create container</span>
+                </Button>
+              </div>
+              <label>{loginMsg}</label>
 
+            </ActionButtons>
+          </form>
+
+        </Actions>
+      </Card>
+      <div class="addcontainer">
+
+        {#await containerData}
+          <p>...Fetching your containers!</p>
+        {:then containers}
+          {#each containers as container}
+            <h5>{container.name}</h5>
+          {/each}
+        {:catch error}
+          <p style="color: red">{error.message}</p>
+        {/await}
+
+        <Fab on:click={doSomething} id="reveal-form">
+
+          <Icon class="material-icons">add</Icon>
+        </Fab>
+
+      </div>
+
+    </div>
+  {/if}
+</div>

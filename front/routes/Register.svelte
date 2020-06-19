@@ -8,6 +8,7 @@
   let password = "";
   let user = { loggedIn: false };
   let loginMsg = "";
+  let logoimgsmall = "gardeniasmall.svg";
 
   function toggle() {
     user.loggedIn = !user.loggedIn;
@@ -63,37 +64,83 @@
   }
 </script>
 
-<h1>Register</h1>
+<style>
+  .gardeniasmall {
+    width: 100px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
+  }
 
-<form
-  on:submit|preventDefault={handleSubmit}
-  on:invalid={validateMessageUsername}
-  on:changed={validateMessageUsername}
-  on:input={validateMessageUsername}>
-  <label for="username">Username</label>
-  <input required type="username" id="username" />
-  {#if error_boolean}
-    <h5>Username already taken</h5>
-  {/if}
-  <label for="email">Email:</label>
-  <input type="email" id="email" />
-  {#if error_boolean}
-    <h5>Plase add a valid email</h5>
-  {/if}
+  .mdc-layout-grid__cell {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    letter-spacing: 0.2em;
+  }
 
-  <label for="password">Password</label>
-  <input required type="password" id="password" />
+  label,
+  button {
+    margin: 0.5em 0px;
+  }
+</style>
 
-  <label for="firstName">First Name</label>
-  <input required type="firstName" id="firstName" />
+<div class="mdc-layout-grid">
+  <div class="mdc-layout-grid__inner">
 
-  <label for="lastName">Last Name</label>
-  <input required type="lastName" id="lastName" />
-  {#if username.loggedIn}
-    <button type="submit" on:click={toggle}>You are register</button>
-  {:else}
-    <button type="submit" on:click={toggle}>Register</button>
-  {/if}
-  <a href="/">Home</a>
-  <label>{loginMsg}</label>
-</form>
+    <div class="mdc-layout-grid__cell" />
+    <div class="mdc-layout-grid__cell">
+      <img src={logoimgsmall} class="gardeniasmall" alt="Gardenia Logo" />
+      <h1>REGISTER</h1>
+      <form
+        on:submit|preventDefault={handleSubmit}
+        on:invalid={validateMessageUsername}
+        on:changed={validateMessageUsername}
+        on:input={validateMessageUsername}>
+        <label for="username">USERNAME</label>
+        <input required type="username" id="username" />
+        {#if error_boolean}
+          <h5>Username already taken</h5>
+        {/if}
+        <label for="email">EMAIL</label>
+        <input type="email" id="email" />
+        {#if error_boolean}
+          <h5>Plase add a valid email</h5>
+        {/if}
+
+        <label for="password">PASSWORD</label>
+        <input required type="password" id="password" />
+
+        <label for="firstName">FIRST NAME</label>
+        <input required type="firstName" id="firstName" />
+
+        <label for="lastName">LAST NAME</label>
+
+        <input required type="lastName" id="lastName" />
+        <br />
+        {#if username.loggedIn}
+          <button
+            type="submit"
+            class="mdc-button mdc-button--raised"
+            on:click={toggle}>
+            You are register
+          </button>
+        {:else}
+          <button
+            type="submit"
+            class="mdc-button mdc-button--raised"
+            on:click={toggle}>
+            Register
+          </button>
+        {/if}
+        <br />
+        <a href="/" class="mdc-button">Home</a>
+        <label>{loginMsg}</label>
+      </form>
+    </div>
+    <div class="mdc-layout-grid__cell" />
+
+  </div>
+
+</div>

@@ -1,6 +1,7 @@
 <script>
   import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
+
   export let params;
 
   const apiUrl = "http://localhost:5000/plant/";
@@ -35,8 +36,9 @@
 </script>
 
 <div class="mdc-layout-grid">
+  <h1>Plants</h1>
   <img src={data.image} alt="{data.genus} {data.species}" />
-  <h1>{data.name}</h1>
+  <h2>{data.name}</h2>
   <h3>Family</h3>
   <p>{data.family}</p>
   <h3>Species</h3>

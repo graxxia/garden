@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  import List, { Item, Text, Graphic } from "@smui/list";
 
   const apiUrl = "http://localhost:5000/plants";
 
@@ -11,14 +12,33 @@
   });
 </script>
 
-<h1>Plants</h1>
+<style>
+  * :global(.plantlist) {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
 
-{#each data as item}
-  <div class="mdc-layout-grid">
+  * :global(.material-icons) {
+    color: rgb(196, 219, 159);
+  }
+</style>
 
-    <a href="/plant/{item.name.substr(0, item.name.indexOf(' '))}">
-      {item.name}
-    </a>
+<div class="mdc-layout-grid">
+  <h1>Plants</h1>
 
-  </div>
-{/each}
+  <List class="plantlist">
+    {#each data as item}
+      <Item>
+
+        <Graphic class="material-icons">eco</Graphic>
+        <Text>
+          <a href="/plant/{item.name.substr(0, item.name.indexOf(' '))}">
+            {item.name}
+          </a>
+        </Text>
+      </Item>
+    {/each}
+  </List>
+</div>
