@@ -9,6 +9,7 @@
   let username = "";
   let password = "";
   let loginMsg = "";
+  let logoimgsmall = "gardeniasmall.svg";
 
   const apiUrl = "http://localhost:5000/users/authenticate";
 
@@ -19,9 +20,7 @@
       password: event.target.password.value
     });
 
-    console.log(userData);
     if (userData.message === undefined) {
-      console.log(userData);
       loginMsg = "Successfully authenticated. :D";
       setCookie(
         "user-token",
@@ -33,7 +32,6 @@
       );
       router.redirect("/");
     } else {
-      console.log(userData.message);
       loginMsg = "Incorrect credentials D:";
     }
   }
@@ -52,12 +50,35 @@
   }
 </script>
 
+<style>
+  .gardeniasmall {
+    width: 100px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
+  }
+
+  .mdc-layout-grid__cell {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    letter-spacing: 0.2em;
+  }
+
+  label,
+  button {
+    margin: 0.5em 0px;
+  }
+</style>
+
 <div class="mdc-layout-grid">
   <div class="mdc-layout-grid__inner">
 
     <div class="mdc-layout-grid__cell" />
     <div class="mdc-layout-grid__cell">
-
+      <img src={logoimgsmall} class="gardeniasmall" alt="Gardenia Logo" />
+      <h1>LOGIN</h1>
       <form
         on:submit={handleSubmit}
         on:invalid={validateMessageUsername}
@@ -67,7 +88,7 @@
         <label for="username">USERNAME</label>
         <input required type="username" id="username" />
         {#if error_boolean}
-          <h1>OH NO! AN ERRROR!</h1>
+          <p>OH NO! AN ERRROR!</p>
         {/if}
 
         <label for="password">PASSWORD</label>
@@ -77,7 +98,7 @@
           <span class="mdc-button__label">Login to account</span>
         </button>
         <br />
-        <a href="/register" class="mdc-button ">Register</a>
+        <a href="/register" class="mdc-button">Register</a>
 
         <br />
         <label>{loginMsg}</label>
