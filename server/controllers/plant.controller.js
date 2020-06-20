@@ -1,4 +1,5 @@
 const Plant = require("../models/plant.model");
+const plantService = require("../services/plant.service");
 
 // Create and Save a new Plant
 exports.create = (req, res) => {
@@ -79,6 +80,20 @@ exports.findOne = (req, res) => {
       });
     });
 };
+
+function getById(req, res, next) {
+  plantService
+    .getById(req.params.id)
+    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .catch((err) => next(err));
+}
+
+function getByUsername(req, res, next) {
+  plantService
+    .getByName(req.params.name)
+    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .catch((err) => next(err));
+}
 
 exports.find = (req, res) => {
   let data = req.body.id;

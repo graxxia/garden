@@ -7,11 +7,8 @@ module.exports = (app) => {
   // Retrieve all container
   app.get("/containers", container.findAll);
 
-  // Retrieve a single container with container id
+  // Retrieve a single container with user id
   app.get("/container/:id", container.findOne);
-
-  // Retrieve a container with container name body
-  app.post("/container", container.findOne);
 
   // Update a container with containerId
   app.put("/container/:containerId", container.update);
