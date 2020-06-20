@@ -1,4 +1,5 @@
 const Plant = require("../models/plant.model");
+const plantService = require("../services/plant.service");
 
 // Create and Save a new Plant
 exports.create = (req, res) => {
@@ -76,6 +77,43 @@ exports.findOne = (req, res) => {
       }
       return res.status(500).send({
         message: "Error retrieving plant with name " + req.body.name,
+      });
+    });
+};
+
+function getById(req, res, next) {
+  plantService
+    .getById(req.params.id)
+    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .catch((err) => next(err));
+}
+
+function getByUsername(req, res, next) {
+  plantService
+    .getByName(req.params.name)
+    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .catch((err) => next(err));
+}
+
+exports.find = (req, res) => {
+  let data = req.body.id;
+  Plant.find({ id: new RegExp(data, "i") })
+    .then((plant) => {
+      if (!plant) {
+        return res.status(404).send({
+          message: "Plant not found with id " + req.params.id,
+        });
+      }
+      res.send(plant);
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "Plant not found with id " + req.params.id,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving plant with id " + req.params.id,
       });
     });
 };

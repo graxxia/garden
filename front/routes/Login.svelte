@@ -9,6 +9,7 @@
   let username = "";
   let password = "";
   let loginMsg = "";
+  let loggedIn = checkCookie("user-token");
   let logoimgsmall = "gardeniasmall.svg";
 
   const apiUrl = "http://localhost:5000/users/authenticate";
@@ -80,7 +81,7 @@
       <img src={logoimgsmall} class="gardeniasmall" alt="Gardenia Logo" />
       <h1>LOGIN</h1>
       <form
-        on:submit={handleSubmit}
+        on:submit|preventDefault={handleSubmit}
         on:invalid={validateMessageUsername}
         on:changed={validateMessageUsername}
         on:input={validateMessageUsername}>
@@ -103,6 +104,10 @@
         <br />
         <label>{loginMsg}</label>
       </form>
+      
+  {#if loggedIn}
+  <p>You're logged in already!</p> <a href="/garden">Visit your garden page?</a>
+  {/if}
     </div>
     <div class="mdc-layout-grid__cell" />
 
