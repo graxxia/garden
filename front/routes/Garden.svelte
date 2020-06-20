@@ -326,8 +326,6 @@ getCookie("user-token");
                                     <label for="plant">Plant</label>
             <input required type="plant" id="plant-{container.id}" value={plant.name} />
 
-        
-
 
             <ActionButtons>
               <div>
@@ -343,7 +341,25 @@ getCookie("user-token");
           </form>
 
         </Actions>
+                        <br/>
+        <div>
+        <h2>Maintenance</h2>
+        <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)*0.001)}kg</p>
+        <br/>
+            <h5>Sun</h5>
+        <p>{plant.sun}</p>
+        <br/>
+            <h5>Water</h5>
+        <p>{plant.water}</p>
+        <br/>
+        <h5>Propogation</h5>
+        <p>{plant.propogation}</p>
+        <br/>
+                <h5>Hardiness</h5>
+        <p>{plant.hardiness}</p>
+        </div>
       </Card>
+
       </div>
       <!--Endo-->
 
