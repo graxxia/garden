@@ -1,9 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import List, { Item, Text, Graphic } from "@smui/list";
-  import Search from "../routes/Search";
 
-  const apiUrl = "http://localhost:5000/plants";
+  const apiUrl = "http://localhost:5000/plant";
 
   let data = [];
 
@@ -11,6 +10,10 @@
     const response = await fetch(apiUrl);
     data = await response.json();
   });
+
+  function searchPlant() {
+    let input = document.getElementById("searchInput").value;
+  }
 </script>
 
 <style>
@@ -29,6 +32,20 @@
 <div class="mdc-layout-grid">
   <h1>Plants</h1>
 
+  <div class="search-container">
+    <form action="/plant/">
+      <input
+        type="text"
+        id="searchInput"
+        onkeyup="searchPlant()"
+        placeholder="Search..."
+        name="search" />
+      <button type="submit">
+        <i class="fa fa-search" />
+      </button>
+    </form>
+  </div>
+
   <List class="plantlist">
     {#each data as item}
       <Item>
@@ -43,5 +60,3 @@
     {/each}
   </List>
 </div>
-
-<Search />

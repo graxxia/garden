@@ -77,9 +77,9 @@
       referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
       body: JSON.stringify(data) // body data type must match "Content-Type" header
     });
-    
-  return response.json(); // parses JSON response into native JavaScript objects
-}
+
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
 
   async function handleSubmit(event) {
     containerData = await fetchData(`http://localhost:5000/container/create/${cookieVal}`, {
@@ -252,7 +252,9 @@ getCookie("user-token");
                 <Button
                   type="submit"
                   class="mdc-button mdc-button--raised"
-                  style="margin-top:15px;">
+                  style="margin-top:15px; border-radius: 50px">
+                  <Icon class="material-icons">save</Icon>
+                  <Label />
                   <span class="mdc-button__label">Create container</span>
                 </Button>
               </div>
