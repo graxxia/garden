@@ -1,8 +1,9 @@
 <script>
+	import { fetchData } from './../src/serverReq.js';
   import Button from "@smui/button";
   import Tab, { Icon, Label } from "@smui/tab";
   import Textfield from "@smui/textfield";
-  import { postData } from "../src/serverReq";
+
   let error_boolean = false;
   let username = "";
   let password = "";
@@ -26,18 +27,18 @@
     console.log(event.target.firstName.value);
     console.log(event.target.lastName.value);
 
-    const userData = await postData(apiUrl, {
+    const userData = await fetchData(apiUrl, {
       username: event.target.username.value,
       password: event.target.password.value,
       email: event.target.email.value,
       firstName: event.target.firstName.value,
       lastName: event.target.lastName.value
-    });
+    }, "POST");
 
     console.log(userData);
     if (userData.message === undefined) {
       console.log(userData);
-      loginMsg = "Successfully register";
+      loginMsg = "Successfully registered";
       setCookie(
         "user-token",
         JSON.stringify({ username: userData.username, token: userData.token }),
@@ -94,7 +95,7 @@
       <img src={logoimgsmall} class="gardeniasmall" alt="Gardenia Logo" />
       <h1>REGISTER</h1>
       <form
-        on:submit|preventDefault={handleSubmit}
+        on:submit={handleSubmit}
         on:invalid={validateMessageUsername}
         on:changed={validateMessageUsername}
         on:input={validateMessageUsername}>

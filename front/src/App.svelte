@@ -1,4 +1,5 @@
 <script>
+	import AddPlant from './../routes/AddPlant.svelte';
   import Plants from "./../routes/Plants.svelte";
   import Home from "./../routes/Home.svelte";
   import Register from "./../routes/Register.svelte";
@@ -34,7 +35,7 @@
   router("/", () => (page = Home));
   router("/plants", () => (page = Plants));
   router(
-    "/plant/:name",
+    "/plants/:name",
 
     // Before we set the component
     (ctx, next) => {
@@ -49,6 +50,7 @@
 
   router("/register", () => (page = Register));
   router("/garden", () => (page = Garden));
+  router("/add/plant", () => (page = AddPlant))
 
   router.start();
 </script>
@@ -160,7 +162,7 @@
                       aria-hidden="true">
                       eco
                     </span>
-                    <psan href="/plant" class="mdc-tab__text-label">
+                    <psan href="/plants" class="mdc-tab__text-label">
                       Plants
                     </psan>
                   </span>
@@ -223,6 +225,28 @@
                 </a>
               {/if}
               {#if loggedIn}
+                              <a href="/add/plant" class="mdc-tab">
+                  <button
+                    class="mdc-tab mdc-tab--active"
+                    role="tab"
+                    aria-selected="true"
+                    tabindex="0">
+                    <span class="mdc-tab__content">
+                      <span
+                        class="mdc-tab__icon material-icons"
+                        aria-hidden="true">
+                        add
+                      </span>
+                      <span class="mdc-tab__text-label">Add Plant</span>
+                    </span>
+                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                      <span
+                        class="mdc-tab-indicator__content
+                        mdc-tab-indicator__content--underline" />
+                    </span>
+                    <span class="mdc-tab__ripple" />
+                  </button>
+                </a>
                 <button
                   class="mdc-tab mdc-tab--active"
                   role="tab"

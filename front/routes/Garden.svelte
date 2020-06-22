@@ -8,6 +8,7 @@
   import { getCookie, checkCookie } from "../src/cookie.js";
   export let params;
 
+import {getData, fetchData} from "../src/serverReq"
   import Card, {
     Content,
     PrimaryAction,
@@ -31,7 +32,7 @@
   let userData;
   let containerData = [];
   let plantData = [];
-  let cookieVal;
+
   let userId;
   let plantIds = [];
   let uom = ['Metric', 'Imperial'];
@@ -43,43 +44,9 @@
   let isMetric = false;
   let metricImperial = uomChoice;
 
-  async function getData(url= '', token) {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: "GET", //POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      "Authorization": `Bearer ${token}` 
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-   
-  });
-  return response.json(); // parses JSON response into native JavaScript objects
-}
 
-  async function fetchData(url = "", data = {}, method = "") {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: method, // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json"
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
-    
-  return response.json(); // parses JSON response into native JavaScript objects
-}
+
+
 
   async function handleSubmit(event) {
     containerData = await fetchData(`http://localhost:5000/container/create/${cookieVal}`, {
@@ -100,6 +67,7 @@
       height: event.target.height.value,
       length: event.target.length.value,
       uom: event.target.uom.value,
+      plant: event.taget.plant.value,
       id: userId
     }, "PUT");
   }
@@ -121,15 +89,13 @@ function validateMessageUsername(event) {
   onMount(async () => {
 const searchTerm = params;  
 if(loggedIn) {
-getCookie("user-token");
-    cookieVal =  JSON.parse(getCookie("user-token"));
+    let cookieVal =  JSON.parse(getCookie("user-token"));
     userData = await getData(`http://localhost:5000/users/name/${cookieVal.username}`, cookieVal.token);
     userId = await userData.id
     containerData = await getData(`http://localhost:5000/container/${userId}`, cookieVal.token)
     containerData.map(el=> {plantIds.push(el.plants)})
-    plantData =  await getData(`http://localhost:5000/plant/id/${plantIds[0]}`, cookieVal.token)
-    plantData = await plantData[0]
-    console.log(await plantData)
+    plantData =  await getData(`http://localhost:5000/plants/id/${plantIds}`, cookieVal.token)
+    console.log(plantData)
      refreshComponent()
     // check if they already have containers
     // if they do, display those with the {#each container} shenanigans

@@ -3,7 +3,7 @@
   import Textfield from "@smui/textfield";
   import { setCookie, checkCookie } from "../src/cookie.js";
   import router from "page";
-  import { postData } from "../src/serverReq";
+  import { fetchData } from "../src/serverReq";
 
   let error_boolean = false;
   let username = "";
@@ -16,10 +16,10 @@
 
   //
   async function handleSubmit(event) {
-    const userData = await postData(apiUrl, {
+    const userData = await fetchData(apiUrl, {
       username: event.target.username.value,
       password: event.target.password.value
-    });
+    }, "POST");
 
     if (userData.message === undefined) {
       loginMsg = "Successfully authenticated. :D";
@@ -81,7 +81,7 @@
       <img src={logoimgsmall} class="gardeniasmall" alt="Gardenia Logo" />
       <h1>LOGIN</h1>
       <form
-        on:submit|preventDefault={handleSubmit}
+        on:submit={handleSubmit}
         on:invalid={validateMessageUsername}
         on:changed={validateMessageUsername}
         on:input={validateMessageUsername}>

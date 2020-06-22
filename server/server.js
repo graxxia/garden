@@ -23,6 +23,7 @@ app.use(jwt());
 
 // api routes
 app.use("/users", require("./controllers/user.controller"));
+app.use("/plants", require("./controllers/plant.controller"));
 
 // global error handler
 app.use(errorHandler);
@@ -35,7 +36,6 @@ app.get("/", (req, res) => {
   });
 });
 
-require("./routes/plant.routes.js")(app);
 require("./routes/container.routes.js")(app);
 
 // listen for requests
