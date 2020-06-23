@@ -385,6 +385,33 @@
           <Icon class="material-icons">add</Icon>
         </Fab>
 
+        </Actions>
+        {#if plant.message == undefined}
+                        <br/>
+        <div>
+        <h2>Maintenance</h2>
+        {#if container.uom != "Metric"}
+
+            <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)/46656)}yards or {(Number(container.depth) * Number(container.height) * Number(container.length)/57.75)} quarts</p>
+        {:else}
+                <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)*0.001)}kg</p>
+        {/if}
+        <br/>
+            <h5>Sun</h5>
+        <p>{plant.sun}</p>
+        <br/>
+            <h5>Water</h5>
+        <p>{plant.water}</p>
+        <br/>
+        <h5>Propogation</h5>
+        <p>{plant.propogation}</p>
+        <br/>
+                <h5>Hardiness</h5>
+        <p>{plant.hardiness}</p>
+        </div>
+        {/if}
+      </Card>
+
       </div>
 
     </div>
