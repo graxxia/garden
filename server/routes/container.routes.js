@@ -1,20 +1,25 @@
 module.exports = (app) => {
   const container = require("../controllers/container.controller");
 
-  // Create a new container
-  app.post("/container/create", container.create);
+  // Create a container
+  app.post("/containers/create", container.create);
 
   // Retrieve all container
   app.get("/containers", container.findAll);
 
-  // Retrieve a single container with user id
-  app.get("/container/:id", container.findOne);
+  // Retrieve a single container with container name
+  app.get("/containers/:name", container.findOne);
 
-  // Update a container with containerId
-  app.put("/container/:containerId", container.update);
+  app.get("/containers/userId/:userId", container.findOne);
+
+  // Retrieve a single container with container id
+  app.get("/containers/id/:id", container.findOne);
+
+  // Update a container with containerService
+  app.put("/containers/:containerId", container.update);
 
   // Delete a container with containerId
-  app.delete("/container/:containerId", container.delete);
+  app.delete("/containers/:containerId", container.delete);
 };
 
 //5ed9c06233bed933ac2be47a

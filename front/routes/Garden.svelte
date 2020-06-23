@@ -8,7 +8,7 @@
   import { getCookie, checkCookie } from "../src/cookie.js";
   export let params;
 
-import {getData, fetchData} from "../src/serverReq"
+import {getData, fetchData, postData} from "../src/serverReq"
   import Card, {
     Content,
     PrimaryAction,
@@ -23,16 +23,14 @@ import {getData, fetchData} from "../src/serverReq"
   import List, { Item, Text } from "@smui/list";
 
   let leafimage = "leaf.jpg";
-
   let error_boolean = false;
   let loginMsg = "";
-  const apiUrl = "http://localhost:5000/container/";
+  const apiUrl = "http://localhost:5000/containers/";
   let data = [];
   let loggedIn = checkCookie("user-token");
   let userData;
   let containerData = [];
   let plantData = [];
-
   let userId;
   let plantIds = [];
   let uom = ['Metric', 'Imperial'];
@@ -43,25 +41,23 @@ import {getData, fetchData} from "../src/serverReq"
   let length = '';
   let isMetric = false;
   let metricImperial = uomChoice;
-
-
-
-
+ let cookieVal = [];
 
   async function handleSubmit(event) {
-    containerData = await fetchData(`http://localhost:5000/container/create/${cookieVal}`, {
+    containerData = await postData(`http://localhost:5000/containers/create`, {
       name: event.target.name.value,
       depth: event.target.depth.value,
       height: event.target.height.value,
       length: event.target.length.value,
       uom: event.target.uom.value,
       id: userId
-    }, "POST");
+    }, cookieVal.token);
+    console.log(await containerData)
   }
 
     async function handleUpdate(event) {
 
-    const containerData = await fetchData(`http://localhost:5000/container/${event.target.id.value}`, {
+    const containerData = await fetchData(`http://localhost:5000/containers/${event.target.id.value}`, {
       name: event.target.name.value,
       depth: event.target.depth.value,
       height: event.target.height.value,
@@ -89,12 +85,13 @@ function validateMessageUsername(event) {
   onMount(async () => {
 const searchTerm = params;  
 if(loggedIn) {
-    let cookieVal =  JSON.parse(getCookie("user-token"));
+     cookieVal =  JSON.parse(getCookie("user-token"));
     userData = await getData(`http://localhost:5000/users/name/${cookieVal.username}`, cookieVal.token);
     userId = await userData.id
-    containerData = await getData(`http://localhost:5000/container/${userId}`, cookieVal.token)
+    containerData = await getData(`http://localhost:5000/containers/userId/${userId}`, cookieVal.token)
     containerData.map(el=> {plantIds.push(el.plants)})
     plantData =  await getData(`http://localhost:5000/plants/id/${plantIds}`, cookieVal.token)
+    console.log(plantIds)
     console.log(plantData)
      refreshComponent()
     // check if they already have containers
@@ -104,11 +101,6 @@ if(loggedIn) {
 }
 
   });
-
-  function doSomething() {
-    document.getElementById("createForm").classList.remove("hidden");
-    document.getElementById("reveal-form").classList.add("hidden");
-  }
 
   function refreshComponent() {
     isMetric = !isMetric
@@ -121,12 +113,7 @@ if(loggedIn) {
     return metricImperial;
 }
 </script>
-
 <style>
-  .hidden {
-    display: none;
-  }
-
   .card-container {
     display: inline-block;
     justify-content: center;
@@ -187,7 +174,7 @@ if(loggedIn) {
         <Actions>
           <form
             id="createForm"
-            on:submit|preventDefault={handleSubmit}
+            on:submit={handleSubmit}
             on:invalid={validateMessageUsername}
             on:changed={validateMessageUsername}
             on:input={validateMessageUsername}>
@@ -240,7 +227,7 @@ if(loggedIn) {
 
   
 <!--start-->
-    <div class="hidden card-container">
+    <div class="card-container">
       <Card style="width: 400px;">
         <PrimaryAction>
           <img src={plant.image} alt={plant.name} />
@@ -275,11 +262,20 @@ if(loggedIn) {
             {/if}
 
             <label>Current Unit of Measurement:</label>
-           
-             <select name="Measurement unit" id="uom" on:input={refreshComponent}>
-              <option value="metric" selected="selected">Metric</option>
+           {#if container.uom != "Metric"}
+
+
+              <select name="Measurement unit" id="uom" on:input={refreshComponent}>
+              <option value="metric" >Metric</option>
+              <option value="Imperial" selected="selected">Imperial</option>
+               </select>
+               {:else}
+                          <select name="Measurement unit" id="uom" on:input={refreshComponent}>
+              <option value="metric"  selected="selected">Metric</option>
               <option value="Imperial">Imperial</option>
                </select>
+           {/if}
+
                            <label for="depth">Depth {metricImperial}</label>
             <input required type="depth" id="depth-{container.id}" value={container.depth} />
 
@@ -288,10 +284,12 @@ if(loggedIn) {
 
             <label for="length">Length {metricImperial}</label>
             <input required type="length" id="length-{container.id}" value={container.length}/>
+{#if plant.message != undefined}
+  
 
                                     <label for="plant">Plant</label>
             <input required type="plant" id="plant-{container.id}" value={plant.name} />
-
+{/if}
 
             <ActionButtons>
               <div>
@@ -307,10 +305,16 @@ if(loggedIn) {
           </form>
 
         </Actions>
+        {#if plant.message != undefined}
                         <br/>
         <div>
         <h2>Maintenance</h2>
-        <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)*0.001)}kg</p>
+        {#if container.uom != "Metric"}
+
+            <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)/46656)}yards or {(Number(container.depth) * Number(container.height) * Number(container.length)/57.75)} quarts</p>
+        {:else}
+                <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)*0.001)}kg</p>
+        {/if}
         <br/>
             <h5>Sun</h5>
         <p>{plant.sun}</p>
@@ -324,24 +328,18 @@ if(loggedIn) {
                 <h5>Hardiness</h5>
         <p>{plant.hardiness}</p>
         </div>
+        {/if}
       </Card>
 
       </div>
       <!--Endo-->
-
-
           {/each}
         {:catch error}
           <p style="color: red">{error.message}</p>
         {/await}
 {/await}
-        <Fab on:click={doSomething} id="reveal-form">
-
-          <Icon class="material-icons">add</Icon>
-        </Fab>
 
       </div>
-
     </div>
   {/if}
 </div>

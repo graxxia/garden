@@ -16,7 +16,7 @@ async function getById(id) {
 
 async function getByName(name) {
   return await Plant.find({ name: { $regex: name } })
-    .sort()
+    .sort("name")
     .limit(5);
 }
 
