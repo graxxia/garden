@@ -1,18 +1,18 @@
 <script>
+  import Search from "./../routes/Search.svelte";
+  import AddPlant from "./../routes/AddPlant.svelte";
   import Plants from "./../routes/Plants.svelte";
   import Home from "./../routes/Home.svelte";
   import Register from "./../routes/Register.svelte";
   import router from "page";
   import Login from "../routes/Login.svelte";
+  import Garden from "../routes/Garden.svelte";
   import { checkCookie, deleteCookie } from "../src/cookie";
   import { MDCTabBar } from "@material/tab-bar";
-  import Plant from "../routes/plant.svelte";
+  import Plant from "../routes/Plant.svelte";
   import { onMount } from "svelte";
+  import global from "../public/global.css";
 
-onMount(async  () => { 
-const topAppBarElement = await document.querySelector('.mdc-top-app-bar');
-const topAppBar = await new MDCTopAppBar(topAppBarElement);
-}); 
   let active = "Home";
   let page;
   let params;
@@ -32,7 +32,7 @@ const topAppBar = await new MDCTopAppBar(topAppBarElement);
   router("/", () => (page = Home));
   router("/plants", () => (page = Plants));
   router(
-    "/plant/:name",
+    "/plants/:name",
 
     // Before we set the component
     (ctx, next) => {
@@ -46,11 +46,10 @@ const topAppBar = await new MDCTopAppBar(topAppBarElement);
   router("/login", () => (page = Login));
 
   router("/register", () => (page = Register));
+  router("/garden", () => (page = Garden));
+  router("/add/plant", () => (page = AddPlant));
 
   router.start();
-
-  //document.cookie = "cookiename=cookievalue";
-  //console.log(document.cookie);
 </script>
 
 <style>
@@ -63,136 +62,210 @@ const topAppBar = await new MDCTopAppBar(topAppBarElement);
     align-content: center;
   }
 
-  img {
-    width: 400px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+  nav {
+    margin-top: 40px;
   }
 
+  nav a:hover {
+    text-decoration: none;
+  }
 
+  .mdc-tab {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
 
-  
+  .logo {
+    width: 500px;
+  }
 </style>
 
 <svelte:head>
   <link
     rel="stylesheet"
     href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+  <script
+    src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js">
+
+  </script>
 </svelte:head>
+<body>
+  <div class="mdc-layout-grid">
+    <div class="mdc-layout-grid__inner">
 
-<img src={logoimg} alt="Gardenia Logo" />
-<!-- <nav>
-  <a href="/">Home</a>
-  {#if !loggedIn}
-    <a href="/login">Login</a>
-  {/if}
-  {#if loggedIn}
-    <button type="submit" on:click={() => deleteCookie('user-token', '', -1)}>
-      Sign out
-    </button>
-  {/if}
+      <div class="mdc-layout-grid__cell" />
+      <div class="mdc-layout-grid__cell">
+        <img src={logoimg} alt="Gardenia Logo" class="logo" />
+      </div>
+      <div class="mdc-layout-grid__cell mdc-layout-grid--align-right">
 
-  <a href="/plants">Plants</a>
-</nav> -->
+        <Search />
+      </div>
 
-<div class="mdc-tab-bar" role="tablist">
-  <div class="mdc-tab-scroller">
-    <div class="mdc-tab-scroller__scroll-area">
-      <div class="mdc-tab-scroller__scroll-content">
-        <div class="flex-nav">
-          <a href="/">
-            <button
-              class="mdc-tab mdc-tab--active"
-              role="tab"
-              aria-selected="true"
-              tabindex="0">
-              <span class="mdc-tab__content">
-                <span class="mdc-tab__icon material-icons" aria-hidden="true">
-                  home
-                </span>
+    </div>
 
-                <span class="mdc-tab__text-label">Home</span>
-              </span>
-              <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                <span
-                  class="mdc-tab-indicator__content
-                  mdc-tab-indicator__content--underline" />
-              </span>
-              <span class="mdc-tab__ripple" />
-            </button>
-          </a>
-          <a href="/plants">
-            <button
-              class="mdc-tab mdc-tab--active"
-              role="tab"
-              aria-selected="true"
-              tabindex="0">
-              <span class="mdc-tab__content">
-                <span class="mdc-tab__icon material-icons" aria-hidden="true">
-                  eco
-                </span>
-                <psan href="/plant" class="mdc-tab__text-label">My Garden</psan>
-              </span>
+  </div>
 
-              <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                <span
-                  class="mdc-tab-indicator__content
-                  mdc-tab-indicator__content--underline" />
-              </span>
-              <span class="mdc-tab__ripple" />
-            </button>
-          </a>
-          {#if !loggedIn}
-            <a href="/login">
-              <button
-                class="mdc-tab mdc-tab--active"
-                role="tab"
-                aria-selected="true"
-                tabindex="0">
-                <span class="mdc-tab__content">
-                  <span class="mdc-tab__icon material-icons" aria-hidden="true">
-                    person
+  <nav>
+    <div class="mdc-tab-bar" role="tablist">
+      <div class="mdc-tab-scroller">
+        <div class="mdc-tab-scroller__scroll-area">
+          <div class="mdc-tab-scroller__scroll-content">
+            <div class="flex-nav">
+              <a href="/" class="mdc-tab">
+                <button
+                  class="mdc-tab mdc-tab--active"
+                  role="tab"
+                  aria-selected="true"
+                  tabindex="0">
+                  <span class="mdc-tab__content">
+                    <span
+                      class="mdc-tab__icon material-icons"
+                      aria-hidden="true">
+                      home
+                    </span>
+                    <span class="mdc-tab__text-label">Home</span>
                   </span>
-                  <span class="mdc-tab__text-label">Login</span>
-                </span>
-                <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                  <span
-                    class="mdc-tab-indicator__content
-                    mdc-tab-indicator__content--underline" />
-                </span>
-                <span class="mdc-tab__ripple" />
-              </button>
-            </a>
-          {/if}
-          {#if loggedIn}
-            <button
-              class="mdc-tab mdc-tab--active"
-              role="tab"
-              aria-selected="true"
-              tabindex="0"
-              type="submit"
-              on:click={() => deleteCookie('user-token', '', -1)}>
-              <span class="mdc-tab__content">
-                <span class="mdc-tab__icon material-icons" aria-hidden="true">
-                  person
-                </span>
-                <span class="mdc-tab__text-label">Sign out</span>
-              </span>
-              <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                <span
-                  class="mdc-tab-indicator__content
-                  mdc-tab-indicator__content--underline" />
-              </span>
-              <span class="mdc-tab__ripple" />
-            </button>
-          {/if}
+                  <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                    <span
+                      class="mdc-tab-indicator__content
+                      mdc-tab-indicator__content--underline" />
+                  </span>
+                  <span class="mdc-tab__ripple" />
+                </button>
+
+              </a>
+              <a href="/plants" class="mdc-tab">
+                <button
+                  class="mdc-tab mdc-tab--active"
+                  role="tab"
+                  aria-selected="true"
+                  tabindex="0">
+                  <span class="mdc-tab__content">
+                    <span
+                      class="mdc-tab__icon material-icons"
+                      aria-hidden="true">
+                      eco
+                    </span>
+                    <psan href="/plants" class="mdc-tab__text-label">
+                      Plants
+                    </psan>
+                  </span>
+
+                  <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                    <span
+                      class="mdc-tab-indicator__content
+                      mdc-tab-indicator__content--underline" />
+                  </span>
+                  <span class="mdc-tab__ripple" />
+                </button>
+              </a>
+
+              {#if !loggedIn}
+                <a href="/login" class="mdc-tab">
+                  <button
+                    class="mdc-tab mdc-tab--active"
+                    role="tab"
+                    aria-selected="true"
+                    tabindex="0">
+                    <span class="mdc-tab__content">
+                      <span
+                        class="mdc-tab__icon material-icons"
+                        aria-hidden="true">
+                        person
+                      </span>
+                      <span class="mdc-tab__text-label">Login</span>
+                    </span>
+                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                      <span
+                        class="mdc-tab-indicator__content
+                        mdc-tab-indicator__content--underline" />
+                    </span>
+                    <span class="mdc-tab__ripple" />
+                  </button>
+                </a>
+              {/if}
+              {#if loggedIn}
+                <a href="/garden" class="mdc-tab">
+                  <button
+                    class="mdc-tab mdc-tab--active"
+                    role="tab"
+                    aria-selected="true"
+                    tabindex="0">
+                    <span class="mdc-tab__content">
+                      <span
+                        class="mdc-tab__icon material-icons"
+                        aria-hidden="true">
+                        spa
+                      </span>
+                      <span href="/garden" class="mdc-tab__text-label">
+                        My Garden
+                      </span>
+                    </span>
+
+                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                      <span
+                        class="mdc-tab-indicator__content
+                        mdc-tab-indicator__content--underline" />
+                    </span>
+                    <span class="mdc-tab__ripple" />
+                  </button>
+                </a>
+                <a href="/add/plant" class="mdc-tab">
+                  <button
+                    class="mdc-tab mdc-tab--active"
+                    role="tab"
+                    aria-selected="true"
+                    tabindex="0">
+                    <span class="mdc-tab__content">
+                      <span
+                        class="mdc-tab__icon material-icons"
+                        aria-hidden="true">
+                        add
+                      </span>
+                      <span class="mdc-tab__text-label">Add Plant</span>
+                    </span>
+                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                      <span
+                        class="mdc-tab-indicator__content
+                        mdc-tab-indicator__content--underline" />
+                    </span>
+                    <span class="mdc-tab__ripple" />
+                  </button>
+                </a>
+                <button
+                  class="mdc-tab mdc-tab--active"
+                  role="tab"
+                  aria-selected="true"
+                  tabindex="0"
+                  type="submit"
+                  on:click={() => deleteCookie('user-token', '', -1)}>
+                  <span class="mdc-tab__content">
+                    <span
+                      class="mdc-tab__icon material-icons"
+                      aria-hidden="true">
+                      person
+                    </span>
+                    <span class="mdc-tab__text-label">Sign out</span>
+                  </span>
+                  <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                    <span
+                      class="mdc-tab-indicator__content
+                      mdc-tab-indicator__content--underline" />
+                  </span>
+                  <span class="mdc-tab__ripple" />
+                </button>
+              {/if}
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-<main>
-  <svelte:component this={page} {params} />
+  </nav>
 
-</main>
+  <main>
+    <svelte:component this={page} {params} />
+
+  </main>
+
+</body>

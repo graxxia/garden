@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const PlantSchema = new mongoose.Schema(
+const schema = new Schema(
   {
     name: String,
     family: String,
@@ -24,5 +25,9 @@ const PlantSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+schema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+});
 
-module.exports = mongoose.model("Plant", PlantSchema);
+module.exports = mongoose.model("Plant", schema);

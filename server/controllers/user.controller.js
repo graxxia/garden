@@ -8,6 +8,7 @@ router.post("/register", register);
 router.get("/", getAll);
 router.get("/current", getCurrent);
 router.get("/:id", getById);
+router.get("/name/:username", getByUsername);
 router.put("/:id", update);
 router.delete("/:id", _delete);
 
@@ -48,6 +49,13 @@ function getCurrent(req, res, next) {
 function getById(req, res, next) {
   userService
     .getById(req.params.id)
+    .then((user) => (user ? res.json(user) : res.sendStatus(404)))
+    .catch((err) => next(err));
+}
+
+function getByUsername(req, res, next) {
+  userService
+    .getByUsername(req.params.username)
     .then((user) => (user ? res.json(user) : res.sendStatus(404)))
     .catch((err) => next(err));
 }

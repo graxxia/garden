@@ -2,17 +2,20 @@ module.exports = (app) => {
   const user = require("../controllers/user.controller");
 
   // Create a new user
-  app.post("/user", user.create);
+  app.post("/users/register", user.create);
 
   // Retrieve all user
   app.get("/users", user.findAll);
 
   // Retrieve a single user with userId
-  app.get("/user/:userId", user.findOne);
+  app.get("/users/:userId", user.findOne);
+
+  // Retrieve a single user with userId
+  app.get("/users/name/:username", user.findOne);
 
   // Update a user with userId
-  app.put("/user/:userId", user.update);
+  app.put("/users/:userId", user.update);
 
   // Delete a user with userId
-  app.delete("/user/:userId", user.delete);
+  app.delete("/users/:userId", user.delete);
 };

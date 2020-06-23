@@ -1,59 +1,49 @@
 <script>
-	import { trefleKey } from './../APIkeys/trefle.js';
+  import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
-  export let params;
+  import { getCookie, checkCookie } from "../src/cookie.js";
 
-  const apiUrl = "http://localhost:5000/plant/";
+  export let params;
+  import { getData, fetchData } from "../src/serverReq";
+  const apiUrl = "http://localhost:5000/plants/";
   let data = [];
 
-
-async function fetchData(url= '', data = {}, method='') {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: method, // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json'
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-    body: JSON.stringify(data) // body data type must match "Content-Type" header
-  });
-  return response.json(); // parses JSON response into native JavaScript objects
-}
-
   onMount(async () => {
-const searchTerm = params.name;  
-
-const response = await fetchData(apiUrl, { name: searchTerm}, "post" );
-
-    data = await response[0]
-    console.log(response)
+    const searchTerm = params.name;
+    if (checkCookie("user-token") === undefined) return;
+    let cookieVal = JSON.parse(getCookie("user-token"));
+    data = await getData(apiUrl + searchTerm, cookieVal.token);
+    data = data[0];
+    console.log(data);
   });
-
 </script>
-<img src="{data.image}" alt="{data.genus} {data.species}" />
-<h1>{data.name}</h1>
-<h3>Family</h3>
-<p>{data.family}</p>
-<h3>Species</h3>
-<p>{data.species}</p>
-<h3>Category</h3>
-<p>{data.category}</p>
-<h3>Height</h3>
-<p>{data.height}</p>
-<h3>Spacing</h3>
-<p>{data.spacing}</p>
-<h3>Sun Requirements</h3>
-<p>{data.sun}</p>
-<h3>Water Requirements</h3>
-<p>{data.water}</p>
-<h3>Propogation</h3>
-<p>{data.propogation}</p>
-<h3>Collection Method</h3>
-<p>{data.collectionMethod}</p>
-<h3>Hardiness</h3>
-<p>{data.hardiness}</p>
+
+{#await data}
+  <p>Retrieving plant information</p>
+{:then plant}
+  <div class="mdc-layout-grid">
+    <h1>Plants</h1>
+    <img src={data.image} alt="{plant.genus} {plant.species}" />
+    <h2>{plant.name}</h2>
+    <h3>Family</h3>
+    <p>{plant.family}</p>
+    <h3>Species</h3>
+    <p>{plant.species}</p>
+    <h3>Category</h3>
+    <p>{plant.category}</p>
+    <h3>Height</h3>
+    <p>{plant.height}</p>
+    <h3>Spacing</h3>
+    <p>{plant.spacing}</p>
+    <h3>Sun Requirements</h3>
+    <p>{plant.sun}</p>
+    <h3>Water Requirements</h3>
+    <p>{plant.water}</p>
+    <h3>Propogation</h3>
+    <p>{plant.propogation}</p>
+    <h3>Collection Method</h3>
+    <p>{plant.collectionMethod}</p>
+    <h3>Hardiness</h3>
+    <p>{plant.hardiness}</p>
+  </div>
+{/await}
