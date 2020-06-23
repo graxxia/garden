@@ -1,5 +1,4 @@
 <script>
-  import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
   import { getCookie, checkCookie } from "../src/cookie.js";
 

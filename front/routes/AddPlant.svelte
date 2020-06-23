@@ -1,5 +1,4 @@
 <script>
-  import { trefleKey } from "./../APIkeys/trefle.js";
   import { postData } from "../src/serverReq";
   import { getCookie, checkCookie } from "../src/cookie.js";
   import { onMount } from "svelte";
@@ -21,25 +20,28 @@
   let data = [];
 
   async function handleSubmit(event) {
-      if (!checkCookie("user-token")) return 
-              console.log(event.target.name.value)
-    data = await postData( apiUrl, {
-
-      name: event.target.name.value,
-      family: event.target.family.value,
-      species: event.target.species.value,
-      category: event.target.category.value,
-      height: event.target.height.value,
-      spacing: event.target.spacing.value,
+    if (!checkCookie("user-token")) return;
+    console.log(event.target.name.value);
+    data = await postData(
+      apiUrl,
+      {
+        name: event.target.name.value,
+        family: event.target.family.value,
+        species: event.target.species.value,
+        category: event.target.category.value,
+        height: event.target.height.value,
+        spacing: event.target.spacing.value,
         sun: event.target.sun.value,
         water: event.target.water.value,
         propogation: event.target.propogation.value,
         collectionMethod: event.target.collectionMethod.value,
         region: event.target.region.value,
         hardiness: event.target.region.value,
-        image: event.target.image.value,
-    }, cookieValue.token);
-    console.log(data)
+        image: event.target.image.value
+      },
+      cookieValue.token
+    );
+    console.log(data);
   }
 
   onMount(async () => {
@@ -49,7 +51,7 @@
 
 <style>
   .mdc-layout-grid {
-    background-color: #014634;
+    background-color: #e3f5bb;
   }
   .card-container {
     display: inline-block;
@@ -79,7 +81,6 @@
     display: block;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 4em;
   }
 </style>
 
@@ -88,9 +89,9 @@
 
     <div class="mdc-layout-grid__cell" />
     <div class="mdc-layout-grid__cell">
-      <h1>Add a Plant</h1>
-      <div class="card-container">
 
+      <div class="card-container">
+        <h1>Add a Plant</h1>
         <Card style="width: 600px;">
           <img src={logoimgsmall} class="gardeniasmall" alt="Gardenia Logo" />
 
