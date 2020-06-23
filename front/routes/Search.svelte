@@ -1,18 +1,31 @@
 <script>
+  import Plant from "./Plant.svelte";
   import { onMount } from "svelte";
   import List, { Item, Text, Graphic } from "@smui/list";
+  import { getData } from "../src/serverReq";
 
-  const apiUrl = "http://localhost:5000/plant";
+  const apiUrl = "http://localhost:5000/plant/";
 
   let data = [];
+  let plantData = [];
 
-  onMount(async () => {
-    const response = await fetch(apiUrl);
-    data = await response.json();
-  });
+  onMount(async () => {});
 
   function searchPlant() {
     let input = document.getElementById("searchInput").value;
+    input = input.toLowerCase();
+    plantData = getData(
+      `${apiUrl}${input}`,
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE4ODM1MDN9.s9ryYHnlV2yLFscnrBVwimaso-i_cVMtz8Jjh_ziOw0"
+    );
+    let x = document.getElementsByClassName("plants");
+    for (let i = 0; i < x.length; i++) {
+      if (!x[i].innerHTML.toLowerCase().includes(input)) {
+        x[i].style.display = "none";
+      } else {
+        x[i].style.display = "list-item";
+      }
+    }
   }
 </script>
 
@@ -33,20 +46,23 @@
   <h1>Plants</h1>
 
   <div class="search-container">
-    <form action="/plant/">
+    <form
+      on:submit|preventDefault={searchPlant}
+      on:changed={searchPlant}
+      on:input={searchPlant}>
       <input
         type="text"
         id="searchInput"
-        onkeyup="searchPlant()"
+        on:input={searchPlant}
+        on:keyup={searchPlant}
+        on:blur={searchPlant}
         placeholder="Search..."
         name="search" />
-      <button type="submit">
-        <i class="fa fa-search" />
-      </button>
+      <button type="submit" value="search" />
     </form>
   </div>
 
-  <List class="plantlist">
+  <!-- <List class="plantlist">
     {#each data as item}
       <Item>
 
@@ -58,5 +74,14 @@
         </Text>
       </Item>
     {/each}
-  </List>
+  </List> -->
 </div>
+{#await plantData}
+  loading
+{:then plantIndex}
+  <ul id="list">
+    {#each plantIndex as plant}
+      <li class="plants">{plant.name}</li>
+    {/each}
+  </ul>
+{/await}

@@ -1,11 +1,12 @@
 <script>
-	import Plant from './Plant.svelte';
+  import Plant from "./Plant.svelte";
   import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
-  import Fab, {Icon} from '@smui/fab';
-  import Select, {Option} from '@smui/select';
-    import Textfield from '@smui/textfield'
+  import Fab, { Icon } from "@smui/fab";
+  import Select, { Option } from "@smui/select";
+  import Textfield from "@smui/textfield";
   import { getCookie, checkCookie } from "../src/cookie.js";
+  import {getData} from "../src/serverReq"
   export let params;
 
   import Card, {
@@ -34,33 +35,16 @@
   let cookieVal;
   let userId;
   let plantIds = [];
-  let uom = ['Metric', 'Imperial'];
-  let uomChoice = '';
-  let name = '';
-  let depth = '';
-  let height = '';
-  let length = '';
+  let uom = ["Metric", "Imperial"];
+  let uomChoice = "";
+  let name = "";
+  let depth = "";
+  let height = "";
+  let length = "";
   let isMetric = false;
   let metricImperial = uomChoice;
 
-  async function getData(url= '', token) {
-  // Default options are marked with *
-  const response = await fetch(url, {
-    method: "GET", //POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, *cors, same-origin
-    cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-    credentials: 'same-origin', // include, *same-origin, omit
-    headers: {
-      'Content-Type': 'application/json',
-      "Authorization": `Bearer ${token}` 
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    redirect: 'follow', // manual, *follow, error
-    referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-   
-  });
-  return response.json(); // parses JSON response into native JavaScript objects
-}
+
 
   async function fetchData(url = "", data = {}, method = "") {
     // Default options are marked with *
@@ -82,29 +66,36 @@
   }
 
   async function handleSubmit(event) {
-    containerData = await fetchData(`http://localhost:5000/container/create/${cookieVal}`, {
-      name: event.target.name.value,
-      depth: event.target.depth.value,
-      height: event.target.height.value,
-      length: event.target.length.value,
-      uom: event.target.uom.value,
-      id: userId
-    }, "POST");
+    containerData = await fetchData(
+      `http://localhost:5000/container/create/${cookieVal}`,
+      {
+        name: event.target.name.value,
+        depth: event.target.depth.value,
+        height: event.target.height.value,
+        length: event.target.length.value,
+        uom: event.target.uom.value,
+        id: userId
+      },
+      "POST"
+    );
   }
 
-    async function handleUpdate(event) {
-
-    const containerData = await fetchData(`http://localhost:5000/container/${event.target.id.value}`, {
-      name: event.target.name.value,
-      depth: event.target.depth.value,
-      height: event.target.height.value,
-      length: event.target.length.value,
-      uom: event.target.uom.value,
-      id: userId
-    }, "PUT");
+  async function handleUpdate(event) {
+    const containerData = await fetchData(
+      `http://localhost:5000/container/${event.target.id.value}`,
+      {
+        name: event.target.name.value,
+        depth: event.target.depth.value,
+        height: event.target.height.value,
+        length: event.target.length.value,
+        uom: event.target.uom.value,
+        id: userId
+      },
+      "PUT"
+    );
   }
 
-function validateMessageUsername(event) {
+  function validateMessageUsername(event) {
     let textbox = event.target;
     error_boolean = false;
     if (textbox.value === "") {
@@ -119,24 +110,34 @@ function validateMessageUsername(event) {
   }
 
   onMount(async () => {
-const searchTerm = params;  
-if(loggedIn) {
-getCookie("user-token");
-    cookieVal =  JSON.parse(getCookie("user-token"));
-    userData = await getData(`http://localhost:5000/users/name/${cookieVal.username}`, cookieVal.token);
-    userId = await userData.id
-    containerData = await getData(`http://localhost:5000/container/${userId}`, cookieVal.token)
-    containerData.map(el=> {plantIds.push(el.plants)})
-    plantData =  await getData(`http://localhost:5000/plant/id/${plantIds[0]}`, cookieVal.token)
-    plantData = await plantData[0]
-    console.log(await plantData)
-     refreshComponent()
-    // check if they already have containers
-    // if they do, display those with the {#each container} shenanigans
-    // make those containers editable
-    // when they exist with a plant provide feedback
-}
-
+    const searchTerm = params;
+    if (loggedIn) {
+      getCookie("user-token");
+      cookieVal = JSON.parse(getCookie("user-token"));
+      userData = await getData(
+        `http://localhost:5000/users/name/${cookieVal.username}`,
+        cookieVal.token
+      );
+      userId = await userData.id;
+      containerData = await getData(
+        `http://localhost:5000/container/${userId}`,
+        cookieVal.token
+      );
+      containerData.map(el => {
+        plantIds.push(el.plants);
+      });
+      plantData = await getData(
+        `http://localhost:5000/plant/id/${plantIds[0]}`,
+        cookieVal.token
+      );
+      plantData = await plantData[0];
+      console.log(await plantData);
+      refreshComponent();
+      // check if they already have containers
+      // if they do, display those with the {#each container} shenanigans
+      // make those containers editable
+      // when they exist with a plant provide feedback
+    }
   });
 
   function doSomething() {
@@ -145,15 +146,15 @@ getCookie("user-token");
   }
 
   function refreshComponent() {
-    isMetric = !isMetric
-    console.log()
-    if(isMetric === true) {
-      metricImperial = "cm"
+    isMetric = !isMetric;
+    console.log();
+    if (isMetric === true) {
+      metricImperial = "cm";
     } else {
-      metricImperial = "in"
+      metricImperial = "in";
     }
     return metricImperial;
-}
+  }
 </script>
 
 <style>
@@ -226,14 +227,17 @@ getCookie("user-token");
             on:changed={validateMessageUsername}
             on:input={validateMessageUsername}>
 
-            <label for="name" value=>Name</label>
+            <label for="name" value="">Name</label>
             <input required type="name" id="name" />
             {#if error_boolean}
               <p>OH NO! AN ERRROR!</p>
             {/if}
 
             <label>Choose a Unit of Measurement:</label>
-            <select name="Measurement unit" id="uom" on:input={refreshComponent}>
+            <select
+              name="Measurement unit"
+              id="uom"
+              on:input={refreshComponent}>
               <option value="metric">Metric</option>
               <option value="Imperial">Imperial</option>
             </select>
@@ -269,92 +273,116 @@ getCookie("user-token");
         {#await containerData}
           <p>...Fetching your containers!</p>
         {:then containers}
-                  {#await plantData}
-          <p>Getting plants...</p>
+          {#await plantData}
+            <p>Getting plants...</p>
           {:then plant}
-          {#each containers as container}
+            {#each containers as container}
+              <!--start-->
+              <div class="hidden card-container">
+                <Card style="width: 400px;">
+                  <PrimaryAction>
+                    <img src={plant.image} alt={plant.name} />
+                    <Content class="mdc-typography--body2">
+                      <h1 class="mdc-typography--headline6" style="margin: 0;">
+                        <span
+                          class="mdc-tab__icon material-icons"
+                          aria-hidden="true">
+                          spa
+                        </span>
+                        {container.name}
+                      </h1>
+                      <h2
+                        class="mdc-typography--subtitle2"
+                        style="margin: 0 0 10px; color: #888;">
+                        {plant.name}
+                      </h2>
+                      <p>
+                        Edit dimensions of your plant's container or add a
+                        plant:
+                      </p>
+                    </Content>
+                  </PrimaryAction>
+                  <Actions>
+                    <form
+                      id="editForm"
+                      on:submit|preventDefault={handleSubmit}
+                      on:invalid={validateMessageUsername}
+                      on:changed={validateMessageUsername}
+                      on:input={validateMessageUsername}>
 
-  
-<!--start-->
-    <div class="hidden card-container">
-      <Card style="width: 400px;">
-        <PrimaryAction>
-          <img src={plant.image} alt={plant.name} />
-          <Content class="mdc-typography--body2">
-            <h1 class="mdc-typography--headline6" style="margin: 0;">
-              <span class="mdc-tab__icon material-icons" aria-hidden="true">
-                spa
-              </span>
-              {container.name}
-            </h1>
-            <h2
-              class="mdc-typography--subtitle2"
-              style="margin: 0 0 10px; color: #888;">
-              {plant.name}
-            </h2>
-            <p>Edit dimensions of your plant's container or add a plant:</p> 
-          </Content>
-        </PrimaryAction>
-        <Actions>
-          <form
-            id="editForm"
+                      <label for="name">Name</label>
+                      <input
+                        required
+                        type="name"
+                        id="name"
+                        value={container.name} />
+                      {#if error_boolean}
+                        <p>OH NO! AN ERRROR!</p>
+                      {/if}
 
-            on:submit|preventDefault={handleSubmit}
-            on:invalid={validateMessageUsername}
-            on:changed={validateMessageUsername}
-            on:input={validateMessageUsername}>
+                      <label>Current Unit of Measurement:</label>
 
-            <label for="name" >Name</label>
-            <input required type="name" id="name" value={container.name} />
-            {#if error_boolean}
-              <p>OH NO! AN ERRROR!</p>
-            {/if}
+                      <select
+                        name="Measurement unit"
+                        id="uom"
+                        on:input={refreshComponent}>
+                        <option value="metric" selected="selected">
+                          Metric
+                        </option>
+                        <option value="Imperial">Imperial</option>
+                      </select>
+                      <label for="depth">Depth {metricImperial}</label>
+                      <input
+                        required
+                        type="depth"
+                        id="depth-{container.id}"
+                        value={container.depth} />
 
-            <label>Current Unit of Measurement:</label>
-           
-             <select name="Measurement unit" id="uom" on:input={refreshComponent}>
-              <option value="metric" selected="selected">Metric</option>
-              <option value="Imperial">Imperial</option>
-               </select>
-                           <label for="depth">Depth {metricImperial}</label>
-            <input required type="depth" id="depth-{container.id}" value={container.depth} />
+                      <label for="height">Height {metricImperial}</label>
+                      <input
+                        required
+                        type="height"
+                        id="height-{container.id}"
+                        value={container.height} />
 
-            <label for="height">Height {metricImperial}</label>
-            <input required type="height" id="height-{container.id}" value={container.height}/>
+                      <label for="length">Length {metricImperial}</label>
+                      <input
+                        required
+                        type="length"
+                        id="length-{container.id}"
+                        value={container.length} />
 
-            <label for="length">Length {metricImperial}</label>
-            <input required type="length" id="length-{container.id}" value={container.length}/>
+                      <label for="plant">Plant</label>
+                      <input
+                        required
+                        type="plant"
+                        id="plant-{container.id}"
+                        value={plant.name} />
 
-                                    <label for="plant">Plant</label>
-            <input required type="plant" id="plant-{container.id}" value={plant.name} />
+                      <ActionButtons>
+                        <div>
+                          <Button
+                            type="submit"
+                            class="mdc-button mdc-button--raised"
+                            style="margin-top:15px;">
+                            <span class="mdc-button__label">
+                              Edit container
+                            </span>
+                          </Button>
+                        </div>
 
-        
+                      </ActionButtons>
+                    </form>
 
-
-            <ActionButtons>
-              <div>
-                <Button
-                  type="submit"
-                  class="mdc-button mdc-button--raised"
-                  style="margin-top:15px;">
-                  <span class="mdc-button__label">Edit container</span>
-                </Button>
+                  </Actions>
+                </Card>
               </div>
-
-            </ActionButtons>
-          </form>
-
-        </Actions>
-      </Card>
-      </div>
-      <!--Endo-->
-
-
-          {/each}
-        {:catch error}
-          <p style="color: red">{error.message}</p>
+              <!--Endo-->
+            {/each}
+          {:catch error}
+            <p style="color: red">{error.message}</p>
+          {/await}
         {/await}
-{/await}
         <Fab on:click={doSomething} id="reveal-form">
 
           <Icon class="material-icons">add</Icon>

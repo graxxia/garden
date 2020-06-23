@@ -13,7 +13,7 @@ function jwt() {
       "/users/authenticate",
       "/users/register",
       "/plants",
-      "/plant/",
+      "/plant/:name",
     ],
   });
 }

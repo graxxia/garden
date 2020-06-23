@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import List, { Item, Text, Graphic } from "@smui/list";
+
   import Search from "../routes/Search";
 
   const apiUrl = "http://localhost:5000/plants";
