@@ -6,10 +6,9 @@
   import Select, { Option } from "@smui/select";
   import Textfield from "@smui/textfield";
   import { getCookie, checkCookie } from "../src/cookie.js";
-  import {getData} from "../src/serverReq"
   export let params;
 
-import {getData, fetchData} from "../src/serverReq"
+  import { getData, fetchData } from "../src/serverReq";
   import Card, {
     Content,
     PrimaryAction,
@@ -45,10 +44,6 @@ import {getData, fetchData} from "../src/serverReq"
   let isMetric = false;
   let metricImperial = uomChoice;
 
-
-
-
-
   async function handleSubmit(event) {
     containerData = await fetchData(
       `http://localhost:5000/container/create/${cookieVal}`,
@@ -64,17 +59,20 @@ import {getData, fetchData} from "../src/serverReq"
     );
   }
 
-    async function handleUpdate(event) {
-
-    const containerData = await fetchData(`http://localhost:5000/container/${event.target.id.value}`, {
-      name: event.target.name.value,
-      depth: event.target.depth.value,
-      height: event.target.height.value,
-      length: event.target.length.value,
-      uom: event.target.uom.value,
-      plant: event.taget.plant.value,
-      id: userId
-    }, "PUT");
+  async function handleUpdate(event) {
+    const containerData = await fetchData(
+      `http://localhost:5000/container/${event.target.id.value}`,
+      {
+        name: event.target.name.value,
+        depth: event.target.depth.value,
+        height: event.target.height.value,
+        length: event.target.length.value,
+        uom: event.target.uom.value,
+        plant: event.taget.plant.value,
+        id: userId
+      },
+      "PUT"
+    );
   }
 
   function validateMessageUsername(event) {
@@ -92,22 +90,32 @@ import {getData, fetchData} from "../src/serverReq"
   }
 
   onMount(async () => {
-const searchTerm = params;  
-if(loggedIn) {
-    let cookieVal =  JSON.parse(getCookie("user-token"));
-    userData = await getData(`http://localhost:5000/users/name/${cookieVal.username}`, cookieVal.token);
-    userId = await userData.id
-    containerData = await getData(`http://localhost:5000/container/${userId}`, cookieVal.token)
-    containerData.map(el=> {plantIds.push(el.plants)})
-    plantData =  await getData(`http://localhost:5000/plants/id/${plantIds}`, cookieVal.token)
-    console.log(plantData)
-     refreshComponent()
-    // check if they already have containers
-    // if they do, display those with the {#each container} shenanigans
-    // make those containers editable
-    // when they exist with a plant provide feedback
-}
-
+    const searchTerm = params;
+    if (loggedIn) {
+      let cookieVal = JSON.parse(getCookie("user-token"));
+      userData = await getData(
+        `http://localhost:5000/users/name/${cookieVal.username}`,
+        cookieVal.token
+      );
+      userId = await userData.id;
+      containerData = await getData(
+        `http://localhost:5000/container/${userId}`,
+        cookieVal.token
+      );
+      containerData.map(el => {
+        plantIds.push(el.plants);
+      });
+      plantData = await getData(
+        `http://localhost:5000/plants/id/${plantIds}`,
+        cookieVal.token
+      );
+      console.log(plantData);
+      refreshComponent();
+      // check if they already have containers
+      // if they do, display those with the {#each container} shenanigans
+      // make those containers editable
+      // when they exist with a plant provide feedback
+    }
   });
 
   function doSomething() {
@@ -226,9 +234,8 @@ if(loggedIn) {
                 <Button
                   type="submit"
                   class="mdc-button mdc-button--raised"
-                  style="margin-top:15px; border-radius: 50px">
+                  style="margin-top:15px; border-radius:50px;">
                   <Icon class="material-icons">save</Icon>
-                  <Label />
                   <span class="mdc-button__label">Create container</span>
                 </Button>
               </div>
@@ -334,54 +341,45 @@ if(loggedIn) {
                           <Button
                             type="submit"
                             class="mdc-button mdc-button--raised"
-                            style="margin-top:15px;">
+                            style="margin-top:15px; border-radius:50px;">
+                            <Icon class="material-icons">edit</Icon>
                             <span class="mdc-button__label">
                               Edit container
                             </span>
                           </Button>
                         </div>
 
+                      </ActionButtons>
+                    </form>
 
-            <ActionButtons>
-              <div>
-                <Button
-                  type="submit"
-                  class="mdc-button mdc-button--raised"
-                  style="margin-top:15px;">
-                  <span class="mdc-button__label">Edit container</span>
-                </Button>
+                  </Actions>
+                  <br />
+                  <div>
+                    <h2>Maintenance</h2>
+                    <p>
+                      Your container can hold {Number(container.depth) * Number(container.height) * Number(container.length) * 0.001}kg
+                    </p>
+                    <br />
+                    <h5>Sun</h5>
+                    <p>{plant.sun}</p>
+                    <br />
+                    <h5>Water</h5>
+                    <p>{plant.water}</p>
+                    <br />
+                    <h5>Propogation</h5>
+                    <p>{plant.propogation}</p>
+                    <br />
+                    <h5>Hardiness</h5>
+                    <p>{plant.hardiness}</p>
+                  </div>
+                </Card>
+
               </div>
-
-            </ActionButtons>
-          </form>
-
-        </Actions>
-                        <br/>
-        <div>
-        <h2>Maintenance</h2>
-        <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)*0.001)}kg</p>
-        <br/>
-            <h5>Sun</h5>
-        <p>{plant.sun}</p>
-        <br/>
-            <h5>Water</h5>
-        <p>{plant.water}</p>
-        <br/>
-        <h5>Propogation</h5>
-        <p>{plant.propogation}</p>
-        <br/>
-                <h5>Hardiness</h5>
-        <p>{plant.hardiness}</p>
-        </div>
-      </Card>
-
-      </div>
-      <!--Endo-->
-
-
-          {/each}
-        {:catch error}
-          <p style="color: red">{error.message}</p>
+              <!--Endo-->
+            {/each}
+          {:catch error}
+            <p style="color: red">{error.message}</p>
+          {/await}
         {/await}
         <Fab on:click={doSomething} id="reveal-form">
 

@@ -1,5 +1,6 @@
 <script>
-	import AddPlant from './../routes/AddPlant.svelte';
+  import Search from "./../routes/Search.svelte";
+  import AddPlant from "./../routes/AddPlant.svelte";
   import Plants from "./../routes/Plants.svelte";
   import Home from "./../routes/Home.svelte";
   import Register from "./../routes/Register.svelte";
@@ -11,9 +12,6 @@
   import Plant from "../routes/Plant.svelte";
   import { onMount } from "svelte";
   import global from "../public/global.css";
-  import Icon from "@smui/textfield/icon/index";
-  import HelperText from "@smui/textfield/helper-text/index";
-  import Textfield, { Input, Textarea } from "@smui/textfield";
 
   let active = "Home";
   let page;
@@ -23,7 +21,6 @@
   let loggedIn = false;
   let username;
   let token;
-  let valueShapedOutlinedA = "";
 
   onMount(async () => {
     const tabBar = await new MDCTabBar(document.querySelector(".mdc-tab-bar"));
@@ -50,7 +47,7 @@
 
   router("/register", () => (page = Register));
   router("/garden", () => (page = Garden));
-  router("/add/plant", () => (page = AddPlant))
+  router("/add/plant", () => (page = AddPlant));
 
   router.start();
 </script>
@@ -77,6 +74,10 @@
     padding-left: 0px;
     padding-right: 0px;
   }
+
+  .logo {
+    width: 500px;
+  }
 </style>
 
 <svelte:head>
@@ -97,24 +98,8 @@
         <img src={logoimg} alt="Gardenia Logo" class="logo" />
       </div>
       <div class="mdc-layout-grid__cell mdc-layout-grid--align-right">
-        <div>
-          <Textfield
-            class="shaped-outlined"
-            variant="outlined"
-            withLeadingIcon
-            bind:value={valueShapedOutlinedA}
-            label="Search"
-            input$aria-controls="helper-text-shaped-outlined-b"
-            input$aria-describedby="helper-text-shaped-outlined-b">
-            <Icon class="material-icons">search</Icon>
-          </Textfield>
-          <HelperText id="helper-text-shaped-outlined-b">
-            Find your plant
-          </HelperText>
 
-          <!-- <pre class="status">Search: {valueShapedOutlinedA}</pre> -->
-        </div>
-
+        <Search />
       </div>
 
     </div>
@@ -175,31 +160,7 @@
                   <span class="mdc-tab__ripple" />
                 </button>
               </a>
-              <a href="/garden" class="mdc-tab">
-                <button
-                  class="mdc-tab mdc-tab--active"
-                  role="tab"
-                  aria-selected="true"
-                  tabindex="0">
-                  <span class="mdc-tab__content">
-                    <span
-                      class="mdc-tab__icon material-icons"
-                      aria-hidden="true">
-                      spa
-                    </span>
-                    <span href="/garden" class="mdc-tab__text-label">
-                      My Garden
-                    </span>
-                  </span>
 
-                  <span class="mdc-tab-indicator mdc-tab-indicator--active">
-                    <span
-                      class="mdc-tab-indicator__content
-                      mdc-tab-indicator__content--underline" />
-                  </span>
-                  <span class="mdc-tab__ripple" />
-                </button>
-              </a>
               {#if !loggedIn}
                 <a href="/login" class="mdc-tab">
                   <button
@@ -225,7 +186,32 @@
                 </a>
               {/if}
               {#if loggedIn}
-                              <a href="/add/plant" class="mdc-tab">
+                <a href="/garden" class="mdc-tab">
+                  <button
+                    class="mdc-tab mdc-tab--active"
+                    role="tab"
+                    aria-selected="true"
+                    tabindex="0">
+                    <span class="mdc-tab__content">
+                      <span
+                        class="mdc-tab__icon material-icons"
+                        aria-hidden="true">
+                        spa
+                      </span>
+                      <span href="/garden" class="mdc-tab__text-label">
+                        My Garden
+                      </span>
+                    </span>
+
+                    <span class="mdc-tab-indicator mdc-tab-indicator--active">
+                      <span
+                        class="mdc-tab-indicator__content
+                        mdc-tab-indicator__content--underline" />
+                    </span>
+                    <span class="mdc-tab__ripple" />
+                  </button>
+                </a>
+                <a href="/add/plant" class="mdc-tab">
                   <button
                     class="mdc-tab mdc-tab--active"
                     role="tab"

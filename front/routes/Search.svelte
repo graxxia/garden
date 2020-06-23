@@ -3,21 +3,25 @@
   import { onMount } from "svelte";
   import List, { Item, Text, Graphic } from "@smui/list";
   import { getData } from "../src/serverReq";
+  import Icon from "@smui/list";
 
-  const apiUrl = "http://localhost:5000/plant/";
+  const apiUrl = "http://localhost:5000/plants/";
 
   let data = [];
   let plantData = [];
 
   onMount(async () => {});
 
-  function searchPlant() {
+  const searchPlant = async () => {
     let input = document.getElementById("searchInput").value;
     input = input.toLowerCase();
-    plantData = getData(
+    input = input.charAt(0).toUpperCase() + input.slice(1);
+    console.log(input);
+    plantData = await getData(
       `${apiUrl}${input}`,
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWRlOTQwZmQ4MGE2ZDUwN2MxMTFmZjQiLCJpYXQiOjE1OTE4ODM1MDN9.s9ryYHnlV2yLFscnrBVwimaso-i_cVMtz8Jjh_ziOw0"
     );
+    input = input.toLowerCase();
     let x = document.getElementsByClassName("plants");
     for (let i = 0; i < x.length; i++) {
       if (!x[i].innerHTML.toLowerCase().includes(input)) {
@@ -26,7 +30,9 @@
         x[i].style.display = "list-item";
       }
     }
-  }
+
+    console.log(await plantData);
+  };
 </script>
 
 <style>
@@ -39,49 +45,51 @@
 
   * :global(.material-icons) {
     color: rgb(196, 219, 159);
+    font-size: 30px;
+  }
+
+  #list {
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+  }
+  button {
+    background-color: white;
+    border: 0px;
+  }
+
+  input {
+    width: 300px;
+    height: 50px;
   }
 </style>
 
 <div class="mdc-layout-grid">
-  <h1>Plants</h1>
 
-  <div class="search-container">
-    <form
-      on:submit|preventDefault={searchPlant}
-      on:changed={searchPlant}
-      on:input={searchPlant}>
-      <input
-        type="text"
-        id="searchInput"
-        on:input={searchPlant}
-        on:keyup={searchPlant}
-        on:blur={searchPlant}
-        placeholder="Search..."
-        name="search" />
-      <button type="submit" value="search" />
-    </form>
-  </div>
+  <form on:input={searchPlant}>
+    <input
+      type="text"
+      id="searchInput"
+      on:input={searchPlant}
+      placeholder="Search..."
+      name="search"
+      class="shaped-outlined"
+      style="margin-top:15px; border-radius:50px;" />
+    <button type="submit" value="search">
+      <Icon class="material-icons">search</Icon>
+    </button>
+  </form>
 
-  <!-- <List class="plantlist">
-    {#each data as item}
-      <Item>
-
-        <Graphic class="material-icons">eco</Graphic>
-        <Text>
-          <a href="/plant/{item.name.substr(0, item.name.indexOf(' '))}">
-            {item.name}
-          </a>
-        </Text>
-      </Item>
-    {/each}
-  </List> -->
 </div>
+
 {#await plantData}
   loading
 {:then plantIndex}
   <ul id="list">
     {#each plantIndex as plant}
-      <li class="plants">{plant.name}</li>
+      <li class="plants">
+        <a href="/plants/{plant.name}">{plant.name}</a>
+      </li>
     {/each}
   </ul>
 {/await}
