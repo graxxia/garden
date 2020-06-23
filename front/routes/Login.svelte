@@ -16,10 +16,14 @@
 
   //
   async function handleSubmit(event) {
-    const userData = await fetchData(apiUrl, {
-      username: event.target.username.value,
-      password: event.target.password.value
-    }, "POST");
+    const userData = await fetchData(
+      apiUrl,
+      {
+        username: event.target.username.value,
+        password: event.target.password.value
+      },
+      "POST"
+    );
 
     if (userData.message === undefined) {
       loginMsg = "Successfully authenticated. :D";
@@ -104,10 +108,11 @@
         <br />
         <label>{loginMsg}</label>
       </form>
-      
-  {#if loggedIn}
-  <p>You're logged in already!</p> <a href="/garden">Visit your garden page?</a>
-  {/if}
+
+      {#if loggedIn}
+        <p>You're logged in already!</p>
+        <a href="/garden">Visit your garden page?</a>
+      {/if}
     </div>
     <div class="mdc-layout-grid__cell" />
 
