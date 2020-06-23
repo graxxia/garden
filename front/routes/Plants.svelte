@@ -3,8 +3,7 @@
   import List, { Item, Text, Graphic } from "@smui/list";
 
   import Search from "../routes/Search";
-
-  const apiUrl = "http://localhost:5000/plants";
+  const apiUrl = "http://localhost:5000/plants/";
 
   let data = [];
 
@@ -36,7 +35,7 @@
 
         <Graphic class="material-icons">eco</Graphic>
         <Text>
-          <a href="/plant/{item.name.substr(0, item.name.indexOf(' '))}">
+          <a href="/plants/{item.name}">
             {item.name}
           </a>
         </Text>

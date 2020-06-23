@@ -2,7 +2,7 @@ module.exports = (app) => {
   const user = require("../controllers/user.controller");
 
   // Create a new user
-  app.post("/user", user.create);
+  app.post("/users/register", user.create);
 
   // Retrieve all user
   app.get("/users", user.findAll);

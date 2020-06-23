@@ -20,8 +20,6 @@ exports.create = (req, res) => {
     plants: req.body.plants,
   });
 
-  const plant = new Plant({});
-
   // Save Container in the database
   container
     .save()

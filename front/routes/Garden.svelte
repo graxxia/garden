@@ -9,6 +9,7 @@
   import {getData} from "../src/serverReq"
   export let params;
 
+import {getData, fetchData} from "../src/serverReq"
   import Card, {
     Content,
     PrimaryAction,
@@ -32,7 +33,7 @@
   let userData;
   let containerData = [];
   let plantData = [];
-  let cookieVal;
+
   let userId;
   let plantIds = [];
   let uom = ["Metric", "Imperial"];
@@ -46,24 +47,7 @@
 
 
 
-  async function fetchData(url = "", data = {}, method = "") {
-    // Default options are marked with *
-    const response = await fetch(url, {
-      method: method, // *GET, POST, PUT, DELETE, etc.
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json"
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      redirect: "follow", // manual, *follow, error
-      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
-    });
 
-    return response.json(); // parses JSON response into native JavaScript objects
-  }
 
   async function handleSubmit(event) {
     containerData = await fetchData(
@@ -80,19 +64,17 @@
     );
   }
 
-  async function handleUpdate(event) {
-    const containerData = await fetchData(
-      `http://localhost:5000/container/${event.target.id.value}`,
-      {
-        name: event.target.name.value,
-        depth: event.target.depth.value,
-        height: event.target.height.value,
-        length: event.target.length.value,
-        uom: event.target.uom.value,
-        id: userId
-      },
-      "PUT"
-    );
+    async function handleUpdate(event) {
+
+    const containerData = await fetchData(`http://localhost:5000/container/${event.target.id.value}`, {
+      name: event.target.name.value,
+      depth: event.target.depth.value,
+      height: event.target.height.value,
+      length: event.target.length.value,
+      uom: event.target.uom.value,
+      plant: event.taget.plant.value,
+      id: userId
+    }, "PUT");
   }
 
   function validateMessageUsername(event) {
@@ -110,34 +92,22 @@
   }
 
   onMount(async () => {
-    const searchTerm = params;
-    if (loggedIn) {
-      getCookie("user-token");
-      cookieVal = JSON.parse(getCookie("user-token"));
-      userData = await getData(
-        `http://localhost:5000/users/name/${cookieVal.username}`,
-        cookieVal.token
-      );
-      userId = await userData.id;
-      containerData = await getData(
-        `http://localhost:5000/container/${userId}`,
-        cookieVal.token
-      );
-      containerData.map(el => {
-        plantIds.push(el.plants);
-      });
-      plantData = await getData(
-        `http://localhost:5000/plant/id/${plantIds[0]}`,
-        cookieVal.token
-      );
-      plantData = await plantData[0];
-      console.log(await plantData);
-      refreshComponent();
-      // check if they already have containers
-      // if they do, display those with the {#each container} shenanigans
-      // make those containers editable
-      // when they exist with a plant provide feedback
-    }
+const searchTerm = params;  
+if(loggedIn) {
+    let cookieVal =  JSON.parse(getCookie("user-token"));
+    userData = await getData(`http://localhost:5000/users/name/${cookieVal.username}`, cookieVal.token);
+    userId = await userData.id
+    containerData = await getData(`http://localhost:5000/container/${userId}`, cookieVal.token)
+    containerData.map(el=> {plantIds.push(el.plants)})
+    plantData =  await getData(`http://localhost:5000/plants/id/${plantIds}`, cookieVal.token)
+    console.log(plantData)
+     refreshComponent()
+    // check if they already have containers
+    // if they do, display those with the {#each container} shenanigans
+    // make those containers editable
+    // when they exist with a plant provide feedback
+}
+
   });
 
   function doSomething() {
@@ -371,17 +341,47 @@
                           </Button>
                         </div>
 
-                      </ActionButtons>
-                    </form>
 
-                  </Actions>
-                </Card>
+            <ActionButtons>
+              <div>
+                <Button
+                  type="submit"
+                  class="mdc-button mdc-button--raised"
+                  style="margin-top:15px;">
+                  <span class="mdc-button__label">Edit container</span>
+                </Button>
               </div>
-              <!--Endo-->
-            {/each}
-          {:catch error}
-            <p style="color: red">{error.message}</p>
-          {/await}
+
+            </ActionButtons>
+          </form>
+
+        </Actions>
+                        <br/>
+        <div>
+        <h2>Maintenance</h2>
+        <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)*0.001)}kg</p>
+        <br/>
+            <h5>Sun</h5>
+        <p>{plant.sun}</p>
+        <br/>
+            <h5>Water</h5>
+        <p>{plant.water}</p>
+        <br/>
+        <h5>Propogation</h5>
+        <p>{plant.propogation}</p>
+        <br/>
+                <h5>Hardiness</h5>
+        <p>{plant.hardiness}</p>
+        </div>
+      </Card>
+
+      </div>
+      <!--Endo-->
+
+
+          {/each}
+        {:catch error}
+          <p style="color: red">{error.message}</p>
         {/await}
         <Fab on:click={doSomething} id="reveal-form">
 
