@@ -1,10 +1,10 @@
 <script>
-  import Plant from "./Plant.svelte";
+	import Plant from './Plant.svelte';
   import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
-  import Fab, { Icon } from "@smui/fab";
-  import Select, { Option } from "@smui/select";
-  import Textfield from "@smui/textfield";
+  import Fab, {Icon} from '@smui/fab';
+  import Select, {Option} from '@smui/select';
+    import Textfield from '@smui/textfield'
   import { getCookie, checkCookie } from "../src/cookie.js";
   export let params;
 
@@ -33,12 +33,12 @@ import {getData, fetchData, postData} from "../src/serverReq"
   let plantData = [];
   let userId;
   let plantIds = [];
-  let uom = ["Metric", "Imperial"];
-  let uomChoice = "";
-  let name = "";
-  let depth = "";
-  let height = "";
-  let length = "";
+  let uom = ['Metric', 'Imperial'];
+  let uomChoice = '';
+  let name = '';
+  let depth = '';
+  let height = '';
+  let length = '';
   let isMetric = false;
   let metricImperial = uomChoice;
  let cookieVal = [];
@@ -68,7 +68,7 @@ import {getData, fetchData, postData} from "../src/serverReq"
     }, "PUT");
   }
 
-  function validateMessageUsername(event) {
+function validateMessageUsername(event) {
     let textbox = event.target;
     error_boolean = false;
     if (textbox.value === "") {
@@ -90,7 +90,7 @@ if(loggedIn) {
     userId = await userData.id
     containerData = await getData(`http://localhost:5000/containers/userId/${userId}`, cookieVal.token)
     containerData.map(el=> {plantIds.push(el.plants)})
-    plantData =  await getData(`http://localhost:5000/plants/id/${plantIds}`, cookieVal.token)
+    plantData =  await getData(`http://localhost:5000/plants/id/${plantIds[0]}`, cookieVal.token)
     console.log(plantIds)
     console.log(plantData)
      refreshComponent()
@@ -103,15 +103,15 @@ if(loggedIn) {
   });
 
   function refreshComponent() {
-    isMetric = !isMetric;
-    console.log();
-    if (isMetric === true) {
-      metricImperial = "cm";
+    isMetric = !isMetric
+    console.log()
+    if(isMetric === true) {
+      metricImperial = "cm"
     } else {
-      metricImperial = "in";
+      metricImperial = "in"
     }
     return metricImperial;
-  }
+}
 </script>
 <style>
   .card-container {
@@ -179,17 +179,14 @@ if(loggedIn) {
             on:changed={validateMessageUsername}
             on:input={validateMessageUsername}>
 
-            <label for="name" value="">Name</label>
+            <label for="name" value=>Name</label>
             <input required type="name" id="name" />
             {#if error_boolean}
               <p>OH NO! AN ERRROR!</p>
             {/if}
 
             <label>Choose a Unit of Measurement:</label>
-            <select
-              name="Measurement unit"
-              id="uom"
-              on:input={refreshComponent}>
+            <select name="Measurement unit" id="uom" on:input={refreshComponent}>
               <option value="metric">Metric</option>
               <option value="Imperial">Imperial</option>
             </select>
@@ -224,42 +221,10 @@ if(loggedIn) {
         {#await containerData}
           <p>...Fetching your containers!</p>
         {:then containers}
-          {#await plantData}
-            <p>Getting plants...</p>
+                  {#await plantData}
+          <p>Getting plants...</p>
           {:then plant}
-            {#each containers as container}
-              <!--start-->
-              <div class="hidden card-container">
-                <Card style="width: 400px;">
-                  <PrimaryAction>
-                    <img src={plant.image} alt={plant.name} />
-                    <Content class="mdc-typography--body2">
-                      <h1 class="mdc-typography--headline6" style="margin: 0;">
-                        <span
-                          class="mdc-tab__icon material-icons"
-                          aria-hidden="true">
-                          spa
-                        </span>
-                        {container.name}
-                      </h1>
-                      <h2
-                        class="mdc-typography--subtitle2"
-                        style="margin: 0 0 10px; color: #888;">
-                        {plant.name}
-                      </h2>
-                      <p>
-                        Edit dimensions of your plant's container or add a
-                        plant:
-                      </p>
-                    </Content>
-                  </PrimaryAction>
-                  <Actions>
-                    <form
-                      id="editForm"
-                      on:submit|preventDefault={handleSubmit}
-                      on:invalid={validateMessageUsername}
-                      on:changed={validateMessageUsername}
-                      on:input={validateMessageUsername}>
+          {#each containers as container}
 
   
 <!--start-->
@@ -286,23 +251,16 @@ if(loggedIn) {
           <form
             id="editForm"
 
-                      <label>Current Unit of Measurement:</label>
+            on:submit|preventDefault={handleSubmit}
+            on:invalid={validateMessageUsername}
+            on:changed={validateMessageUsername}
+            on:input={validateMessageUsername}>
 
-                      <select
-                        name="Measurement unit"
-                        id="uom"
-                        on:input={refreshComponent}>
-                        <option value="metric" selected="selected">
-                          Metric
-                        </option>
-                        <option value="Imperial">Imperial</option>
-                      </select>
-                      <label for="depth">Depth {metricImperial}</label>
-                      <input
-                        required
-                        type="depth"
-                        id="depth-{container.id}"
-                        value={container.depth} />
+            <label for="name" >Name</label>
+            <input required type="name" id="name" value={container.name} />
+            {#if error_boolean}
+              <p>OH NO! AN ERRROR!</p>
+            {/if}
 
             <label>Current Unit of Measurement:</label>
            {#if container.uom != "Metric"}
@@ -322,16 +280,12 @@ if(loggedIn) {
                            <label for="depth">Depth {metricImperial}</label>
             <input required type="depth" id="depth-{container.id}" value={container.depth} />
 
-                      <label for="length">Length {metricImperial}</label>
-                      <input
-                        required
-                        type="length"
-                        id="length-{container.id}"
-                        value={container.length} />
+            <label for="height">Height {metricImperial}</label>
+            <input required type="height" id="height-{container.id}" value={container.height}/>
 
             <label for="length">Length {metricImperial}</label>
             <input required type="length" id="length-{container.id}" value={container.length}/>
-{#if plant.message != undefined}
+{#if plant.message == undefined}
   
 
                                     <label for="plant">Plant</label>
@@ -343,7 +297,8 @@ if(loggedIn) {
                 <Button
                   type="submit"
                   class="mdc-button mdc-button--raised"
-                  style="margin-top:15px;">
+                  style="margin-top:15px; border-radius:50px;">
+                  <Icon class="material-icons">edit</Icon>
                   <span class="mdc-button__label">Edit container</span>
                 </Button>
               </div>
