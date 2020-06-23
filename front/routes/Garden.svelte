@@ -56,8 +56,8 @@ import {getData, fetchData, postData} from "../src/serverReq"
   }
 
     async function handleUpdate(event) {
-
-    const containerData = await fetchData(`http://localhost:5000/containers/${event.target.id.value}`, {
+console.log(event.target.depth.value)
+     const editedContainer = await fetchData(`http://localhost:5000/containers/${event.target.id.value}`, {
       name: event.target.name.value,
       depth: event.target.depth.value,
       height: event.target.height.value,
@@ -66,6 +66,7 @@ import {getData, fetchData, postData} from "../src/serverReq"
       plant: event.taget.plant.value,
       id: userId
     }, "PUT");
+    console.log(editedContainer)
   }
 
 function validateMessageUsername(event) {
@@ -251,7 +252,7 @@ if(loggedIn) {
           <form
             id="editForm"
 
-            on:submit|preventDefault={handleSubmit}
+            on:submit|preventDefault={handleUpdate}
             on:invalid={validateMessageUsername}
             on:changed={validateMessageUsername}
             on:input={validateMessageUsername}>
@@ -278,18 +279,18 @@ if(loggedIn) {
            {/if}
 
                            <label for="depth">Depth {metricImperial}</label>
-            <input required type="depth" id="depth-{container.id}" value={container.depth} />
+            <input  id="depth-{container.id}" value={container.depth} />
 
             <label for="height">Height {metricImperial}</label>
-            <input required type="height" id="height-{container.id}" value={container.height}/>
+            <input id="height-{container.id}" value={container.height}/>
 
             <label for="length">Length {metricImperial}</label>
-            <input required type="length" id="length-{container.id}" value={container.length}/>
+            <input id="length-{container.id}" value={container.length}/>
 {#if plant.message == undefined}
   
 
-                                    <label for="plant">Plant</label>
-            <input required type="plant" id="plant-{container.id}" value={plant.name} />
+            <label for="plant">Plant</label>
+            <input  id="plant-{container.id}" value={plant.name} />
 {/if}
 
             <ActionButtons>

@@ -56,7 +56,7 @@
 
         <Graphic class="material-icons">eco</Graphic>
         <Text>
-          <a href="/plant/{item.name.substr(0, item.name.indexOf(' '))}">
+          <a href="/plants/{item.name}">
             {item.name}
           </a>
         </Text>
