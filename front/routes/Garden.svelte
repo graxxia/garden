@@ -1,5 +1,6 @@
 <script>
   import Plant from "./Plant.svelte";
+  import { trefleKey } from "./../APIkeys/trefle.js";
   import { onMount } from "svelte";
   import Fab, { Icon } from "@smui/fab";
   import Select, { Option } from "@smui/select";
@@ -7,7 +8,7 @@
   import { getCookie, checkCookie } from "../src/cookie.js";
   export let params;
 
-  import { getData, fetchData } from "../src/serverReq";
+  import { getData, fetchData, postData } from "../src/serverReq";
   import Card, {
     Content,
     PrimaryAction,
@@ -22,16 +23,14 @@
   import List, { Item, Text } from "@smui/list";
 
   let leafimage = "leaf.jpg";
-
   let error_boolean = false;
   let loginMsg = "";
-  const apiUrl = "http://localhost:5000/container/";
+  const apiUrl = "http://localhost:5000/containers/";
   let data = [];
   let loggedIn = checkCookie("user-token");
   let userData;
   let containerData = [];
   let plantData = [];
-
   let userId;
   let plantIds = [];
   let uom = ["Metric", "Imperial"];
@@ -42,10 +41,11 @@
   let length = "";
   let isMetric = false;
   let metricImperial = uomChoice;
+  let cookieVal = [];
 
   async function handleSubmit(event) {
-    containerData = await fetchData(
-      `http://localhost:5000/container/create/${cookieVal}`,
+    containerData = await postData(
+      `http://localhost:5000/containers/create`,
       {
         name: event.target.name.value,
         depth: event.target.depth.value,
@@ -54,13 +54,14 @@
         uom: event.target.uom.value,
         id: userId
       },
-      "POST"
+      cookieVal.token
     );
+    console.log(await containerData);
   }
 
   async function handleUpdate(event) {
     const containerData = await fetchData(
-      `http://localhost:5000/container/${event.target.id.value}`,
+      `http://localhost:5000/containers/${event.target.id.value}`,
       {
         name: event.target.name.value,
         depth: event.target.depth.value,
@@ -91,23 +92,24 @@
   onMount(async () => {
     const searchTerm = params;
     if (loggedIn) {
-      let cookieVal = JSON.parse(getCookie("user-token"));
+      cookieVal = JSON.parse(getCookie("user-token"));
       userData = await getData(
         `http://localhost:5000/users/name/${cookieVal.username}`,
         cookieVal.token
       );
       userId = await userData.id;
       containerData = await getData(
-        `http://localhost:5000/container/${userId}`,
+        `http://localhost:5000/containers/userId/${userId}`,
         cookieVal.token
       );
       containerData.map(el => {
         plantIds.push(el.plants);
       });
       plantData = await getData(
-        `http://localhost:5000/plants/id/${plantIds}`,
+        `http://localhost:5000/plants/id/${plantIds[0]}`,
         cookieVal.token
       );
+      console.log(plantIds);
       console.log(plantData);
       refreshComponent();
       // check if they already have containers
@@ -116,11 +118,6 @@
       // when they exist with a plant provide feedback
     }
   });
-
-  function doSomething() {
-    document.getElementById("createForm").classList.remove("hidden");
-    document.getElementById("reveal-form").classList.add("hidden");
-  }
 
   function refreshComponent() {
     isMetric = !isMetric;
@@ -135,10 +132,6 @@
 </script>
 
 <style>
-  .hidden {
-    display: none;
-  }
-
   .card-container {
     display: inline-block;
     justify-content: center;
@@ -199,7 +192,7 @@
         <Actions>
           <form
             id="createForm"
-            on:submit|preventDefault={handleSubmit}
+            on:submit={handleSubmit}
             on:invalid={validateMessageUsername}
             on:changed={validateMessageUsername}
             on:input={validateMessageUsername}>
@@ -254,7 +247,7 @@
           {:then plant}
             {#each containers as container}
               <!--start-->
-              <div class="hidden card-container">
+              <div class="card-container">
                 <Card style="width: 400px;">
                   <PrimaryAction>
                     <img src={plant.image} alt={plant.name} />
@@ -297,16 +290,28 @@
                       {/if}
 
                       <label>Current Unit of Measurement:</label>
+                      {#if container.uom != 'Metric'}
+                        <select
+                          name="Measurement unit"
+                          id="uom"
+                          on:input={refreshComponent}>
+                          <option value="metric">Metric</option>
+                          <option value="Imperial" selected="selected">
+                            Imperial
+                          </option>
+                        </select>
+                      {:else}
+                        <select
+                          name="Measurement unit"
+                          id="uom"
+                          on:input={refreshComponent}>
+                          <option value="metric" selected="selected">
+                            Metric
+                          </option>
+                          <option value="Imperial">Imperial</option>
+                        </select>
+                      {/if}
 
-                      <select
-                        name="Measurement unit"
-                        id="uom"
-                        on:input={refreshComponent}>
-                        <option value="metric" selected="selected">
-                          Metric
-                        </option>
-                        <option value="Imperial">Imperial</option>
-                      </select>
                       <label for="depth">Depth {metricImperial}</label>
                       <input
                         required
@@ -327,13 +332,14 @@
                         type="length"
                         id="length-{container.id}"
                         value={container.length} />
-
-                      <label for="plant">Plant</label>
-                      <input
-                        required
-                        type="plant"
-                        id="plant-{container.id}"
-                        value={plant.name} />
+                      {#if plant.message == undefined}
+                        <label for="plant">Plant</label>
+                        <input
+                          required
+                          type="plant"
+                          id="plant-{container.id}"
+                          value={plant.name} />
+                      {/if}
 
                       <ActionButtons>
                         <div>
@@ -352,25 +358,35 @@
                     </form>
 
                   </Actions>
-                  <br />
-                  <div>
-                    <h2>Maintenance</h2>
-                    <p>
-                      Your container can hold {Number(container.depth) * Number(container.height) * Number(container.length) * 0.001}kg
-                    </p>
+                  {#if plant.message == undefined}
                     <br />
-                    <h5>Sun</h5>
-                    <p>{plant.sun}</p>
-                    <br />
-                    <h5>Water</h5>
-                    <p>{plant.water}</p>
-                    <br />
-                    <h5>Propogation</h5>
-                    <p>{plant.propogation}</p>
-                    <br />
-                    <h5>Hardiness</h5>
-                    <p>{plant.hardiness}</p>
-                  </div>
+                    <div>
+                      <h2>Maintenance</h2>
+                      {#if container.uom != 'Metric'}
+                        <p>
+                          Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)) / 46656}yards
+                          or {(Number(container.depth) * Number(container.height) * Number(container.length)) / 57.75}
+                          quarts
+                        </p>
+                      {:else}
+                        <p>
+                          Your container can hold {Number(container.depth) * Number(container.height) * Number(container.length) * 0.001}kg
+                        </p>
+                      {/if}
+                      <br />
+                      <h5>Sun</h5>
+                      <p>{plant.sun}</p>
+                      <br />
+                      <h5>Water</h5>
+                      <p>{plant.water}</p>
+                      <br />
+                      <h5>Propogation</h5>
+                      <p>{plant.propogation}</p>
+                      <br />
+                      <h5>Hardiness</h5>
+                      <p>{plant.hardiness}</p>
+                    </div>
+                  {/if}
                 </Card>
 
               </div>
@@ -380,40 +396,8 @@
             <p style="color: red">{error.message}</p>
           {/await}
         {/await}
-        <Fab on:click={doSomething} id="reveal-form">
-
-          <Icon class="material-icons">add</Icon>
-        </Fab>
-
-        </Actions>
-        {#if plant.message == undefined}
-                        <br/>
-        <div>
-        <h2>Maintenance</h2>
-        {#if container.uom != "Metric"}
-
-            <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)/46656)}yards or {(Number(container.depth) * Number(container.height) * Number(container.length)/57.75)} quarts</p>
-        {:else}
-                <p>Your container can hold {(Number(container.depth) * Number(container.height) * Number(container.length)*0.001)}kg</p>
-        {/if}
-        <br/>
-            <h5>Sun</h5>
-        <p>{plant.sun}</p>
-        <br/>
-            <h5>Water</h5>
-        <p>{plant.water}</p>
-        <br/>
-        <h5>Propogation</h5>
-        <p>{plant.propogation}</p>
-        <br/>
-                <h5>Hardiness</h5>
-        <p>{plant.hardiness}</p>
-        </div>
-        {/if}
-      </Card>
 
       </div>
-
     </div>
   {/if}
 </div>
