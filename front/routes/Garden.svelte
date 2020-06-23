@@ -307,7 +307,7 @@ if(loggedIn) {
           </form>
 
         </Actions>
-        {#if plant.message != undefined}
+        {#if plant.message == undefined}
                         <br/>
         <div>
         <h2>Maintenance</h2>
