@@ -7,12 +7,15 @@ const ContainerSchema = new mongoose.Schema(
     height: Number,
     length: Number,
     uom: String,
-    id: String,
+    userId: String,
     plants: Array,
   },
   {
     timestamps: true,
   }
 );
-
+ContainerSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+});
 module.exports = mongoose.model("Container", ContainerSchema);

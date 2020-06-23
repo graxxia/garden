@@ -21,30 +21,25 @@
   let data = [];
 
   async function handleSubmit(event) {
-    if (!checkCookie("user-token")) return;
-    console.log(event);
-    console.log(event.target);
-    console.log(event.target.name);
-    console.log(event.target.name.value);
-    data = await postData(
-      apiUrl,
-      {
-        name: event.target.name.value,
-        family: event.target.family.value,
-        species: event.target.species.value,
-        category: event.target.category.value,
-        height: event.target.height.value,
-        spacing: event.target.spacing.value,
+      if (!checkCookie("user-token")) return 
+              console.log(event.target.name.value)
+    data = await postData( apiUrl, {
+
+      name: event.target.name.value,
+      family: event.target.family.value,
+      species: event.target.species.value,
+      category: event.target.category.value,
+      height: event.target.height.value,
+      spacing: event.target.spacing.value,
         sun: event.target.sun.value,
         water: event.target.water.value,
         propogation: event.target.propogation.value,
         collectionMethod: event.target.collectionMethod.value,
         region: event.target.region.value,
-        image: event.target.image.value
-      },
-      cookieValue.token
-    );
-    console.log(data);
+        hardiness: event.target.region.value,
+        image: event.target.image.value,
+    }, cookieValue.token);
+    console.log(data)
   }
 
   onMount(async () => {

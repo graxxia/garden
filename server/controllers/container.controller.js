@@ -1,139 +1,82 @@
-const Container = require("../models/container.model");
-const Plant = require("../models/plant.model");
-// Create and Save a new Container
-exports.create = (req, res) => {
-  // Validate request
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Container content can not be empty",
-    });
-  }
+const express = require("express");
+const containerService = require("../services/container.service");
+const router = express.Router();
 
-  // Create a Container
-  const container = new Container({
-    name: req.body.name,
-    depth: req.body.depth,
-    height: req.body.height,
-    length: req.body.length,
-    uom: req.body.uom,
-    id: req.body.id,
-    plants: req.body.plants,
-  });
+// routes
 
-  // Save Container in the database
-  container
-    .save()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Container.",
-      });
-    });
-};
+// Create a container
+router.post("/create", create);
 
-// Retrieve and return all containers from the database.
-exports.findAll = (req, res) => {
-  Container.find()
-    .then((containers) => {
-      res.send(containers);
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving containers.",
-      });
-    });
-};
+// Retrieve all container
+router.get("/", getAll);
 
-// Find a single container with a containerId
-exports.findOne = (req, res) => {
-  let data = req.body.name;
-  Container.find({ id: new RegExp(data, "i") })
-    .then((container) => {
-      if (!container) {
-        return res.status(404).send({
-          message: "Container not found with name " + req.body.name,
-        });
-      }
-      res.send(container);
-    })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "Container not found with name " + req.body.name,
-        });
-      }
-      return res.status(500).send({
-        message: "Error retrieving container with name " + req.body.name,
-      });
-    });
-};
+// Retrieve a single container with container name
+router.get("/:name", getByName);
 
-// Update a container identified by the containerId in the request
-exports.update = (req, res) => {
-  // Validate Request
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Container content can not be empty",
-    });
-  }
+router.get("/userId/:userId", getByUserId);
 
-  // Find container and update it with the request body
-  Container.findByIdAndUpdate(
-    req.params.containerId,
-    {
-      name: req.body.name,
-      depth: req.body.depth,
-      height: req.body.height,
-      length: req.body.length,
-      uom: req.body.uom,
-      id: req.body.id,
-      plants: req.body.plants,
-    },
-    { new: true }
-  )
-    .then((container) => {
-      if (!container) {
-        return res.status(404).send({
-          message: "Container not found with id " + req.params.containerId,
-        });
-      }
-      res.send(container);
-    })
-    .catch((err) => {
-      if (err.kind === "ObjectId") {
-        return res.status(404).send({
-          message: "Container not found with id " + req.params.containerId,
-        });
-      }
-      return res.status(500).send({
-        message: "Error updating container with id " + req.params.containerId,
-      });
-    });
-};
+// Retrieve a single container with container id
+router.get("/id/:id", getById);
 
-// Delete a container with the specified containerId in the request
-exports.delete = (req, res) => {
-  Container.findByIdAndRemove(req.params.containerId)
-    .then((container) => {
-      if (!container) {
-        return res.status(404).send({
-          message: "Container not found with id " + req.params.containerId,
-        });
-      }
-      res.send({ message: "Container deleted successfully!" });
-    })
-    .catch((err) => {
-      if (err.kind === "ObjectId" || err.name === "NotFound") {
-        return res.status(404).send({
-          message: "Container not found with id " + req.params.containerId,
-        });
-      }
-      return res.status(500).send({
-        message: "Could not delete container with id " + req.params.containerId,
-      });
-    });
-};
+// Update a container with containerService
+router.put("/:containerId", updateContainer);
+
+// Delete a container with containerId
+router.delete("/:containerId", _delete);
+
+module.exports = router;
+
+function create(req, res, next) {
+  containerService
+    .create(req.body)
+    .then(() => res.json({}))
+    .catch((err) => next(err));
+}
+
+function getAll(req, res, next) {
+  containerService
+    .getAll()
+    .then((containers) => res.json(containers))
+    .catch((err) => next(err));
+}
+
+function getById(req, res, next) {
+  containerService
+    .getById(req.params.id)
+    .then((container) =>
+      container ? res.json(container) : res.sendStatus(404)
+    )
+    .catch((err) => next(err));
+}
+
+function getByUserId(req, res, next) {
+  containerService
+    .getByUserId(req.params.userId)
+    .then((container) =>
+      container ? res.json(container) : res.sendStatus(404)
+    )
+    .catch((err) => next(err));
+}
+
+function getByName(req, res, next) {
+  containerService
+    .getByName(req.params.name)
+    .then((container) =>
+      container ? res.json(container) : res.sendStatus(404)
+    )
+    .catch((err) => next(err));
+}
+
+function updateContainer(req, res, next) {
+  containerService
+    .update(req.params.id, req.body)
+    .then(() => res.json({}))
+    .catch((err) => next(err));
+}
+
+function _delete(req, res, next) {
+  containerService
+    .delete(req.params.id)
+    .then(() => res.json({}))
+    .catch((err) => next(err));
+}

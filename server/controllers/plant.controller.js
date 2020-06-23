@@ -26,7 +26,7 @@ module.exports = router;
 
 function create(req, res, next) {
   plantService
-    .create(req, res)
+    .create(req.body)
     .then(() => res.json({}))
     .catch((err) => next(err));
 }

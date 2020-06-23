@@ -24,6 +24,7 @@ app.use(jwt());
 // api routes
 app.use("/users", require("./controllers/user.controller"));
 app.use("/plants", require("./controllers/plant.controller"));
+app.use("/containers", require("./controllers/container.controller"));
 
 // global error handler
 app.use(errorHandler);
@@ -35,8 +36,6 @@ app.get("/", (req, res) => {
       "Welcome to Garden application. Organize and keep track of all your plants.",
   });
 });
-
-require("./routes/container.routes.js")(app);
 
 // listen for requests
 
