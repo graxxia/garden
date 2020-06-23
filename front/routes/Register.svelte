@@ -19,13 +19,6 @@
 
   //
   async function handleSubmit(event) {
-    console.log(event);
-    console.log(event.target);
-    console.log(event.target.username.value);
-    console.log(event.target.password.value);
-    console.log(event.target.email.value);
-    console.log(event.target.firstName.value);
-    console.log(event.target.lastName.value);
 
     const userData = await fetchData(apiUrl, {
       username: event.target.username.value,
@@ -35,9 +28,7 @@
       lastName: event.target.lastName.value
     }, "POST");
 
-    console.log(userData);
     if (userData.message === undefined) {
-      console.log(userData);
       loginMsg = "Successfully registered";
       setCookie(
         "user-token",
@@ -46,7 +37,6 @@
       );
       router.redirect("/");
     } else {
-      console.log(userData.message);
       loginMsg = "Incorrect credentials";
     }
   }

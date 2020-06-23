@@ -10,7 +10,12 @@
 
   async function handleSubmit(event) {
       if (!checkCookie("user-token")) return 
+              console.log(event)
+              console.log(event.target)
+              console.log(event.target.name)
+              console.log(event.target.name.value)
     data = await postData( apiUrl, {
+
       name: event.target.name.value,
       family: event.target.family.value,
       species: event.target.species.value,
@@ -24,6 +29,7 @@
         region: event.target.region.value,
         image: event.target.image.value,
     }, cookieValue.token);
+    console.log(data)
   }
 
    onMount(async () => {cookieValue = JSON.parse(getCookie("user-token"));});
@@ -39,7 +45,7 @@
       <form
         on:submit|preventDefault={handleSubmit}>
         <label for="name">Name</label>
-        <input required type="name" id="name" />
+        <input  id="name" />
         <br />
         <label for="family">Family</label>
         <input  id="family" />
@@ -59,10 +65,10 @@
         <label for="water">Water</label>
         <input id="water" />
         <br />
-                <label for="hardiness">Hardiness</label>
+        <label for="hardiness">Hardiness</label>
         <input  id="hardiness" />
         <br />
-                        <label for="folliage">Folliage</label>
+        <label for="folliage">Folliage</label>
         <input  id="folliage" />
         <br />
         <label for="height">Height</label>
@@ -71,10 +77,10 @@
         <label for="spacing">Spacing</label>
         <input  id="spacing" />
         <br />
-                <label for="color">Color</label>
+        <label for="color">Color</label>
         <input id="color" />
         <br />
-                        <label for="soil">Soil</label>
+        <label for="soil">Soil</label>
         <input  id="soil" />
         <br />
         <label for="propogation">Propogation</label>
@@ -98,9 +104,14 @@
         <br />
       </form>
       {#await data}
+
       <p>Getting server message</p>
+
       {:then addition}
+      {#if addition.message !== undefined}
       <p> {addition.message}</p>
+      {/if}
+
       {/await}
     </div>
     <div class="mdc-layout-grid__cell" />
