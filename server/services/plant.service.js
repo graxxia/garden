@@ -34,12 +34,12 @@ async function create(plantParam) {
 
 // Retrieve and return all plants from the database.
 async function getAll() {
-  return await Plant.find();
+  return await Plant.find().sort("name");
 }
 
 // Update a plant identified by the plantId in the request
 async function update(id, plantParam) {
-  const plant = await plant.findById(id);
+  const plant = await Plant.findById(id);
 
   // validate
   if (!plant) throw "plant not found";

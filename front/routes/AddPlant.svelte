@@ -10,9 +10,6 @@
 
   async function handleSubmit(event) {
       if (!checkCookie("user-token")) return 
-              console.log(event)
-              console.log(event.target)
-              console.log(event.target.name)
               console.log(event.target.name.value)
     data = await postData( apiUrl, {
 
@@ -27,6 +24,7 @@
         propogation: event.target.propogation.value,
         collectionMethod: event.target.collectionMethod.value,
         region: event.target.region.value,
+        hardiness: event.target.region.value,
         image: event.target.image.value,
     }, cookieValue.token);
     console.log(data)
