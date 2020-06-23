@@ -17,6 +17,12 @@
   });
 </script>
 
+<style>
+  .mdc-layout-grid {
+    width: 80%;
+  }
+</style>
+
 {#await data}
   <p>Retrieving plant information</p>
 {:then plant}
